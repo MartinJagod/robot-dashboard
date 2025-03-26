@@ -3,17 +3,25 @@ import RobotCard from '../components/RobotCard';
 import { useState, useEffect } from 'react';
 
 const Dashboard = () => {
-  const { robots, robotsHistory } = useRobots();
+  // Lista "hardcodeada" de robots
+  const robotList = [
+    { id: 61, name: 'Localhost' },
+    { id: 11, name: 'Flocker001' },
+    { id: 12, name: 'Flocker002' },
+    { id: 13, name: 'Flocker003' },
+    { id: 14, name: 'Flocker004' },
+    { id: 15, name: 'Flocker005' },
+    { id: 16, name: 'Flocker006' },
+    { id: 17, name: 'Flocker007' },
+  ];
+
   const [selectedRobotId, setSelectedRobotId] = useState('');
+
+  const { robots, robotsHistory } = useRobots(selectedRobotId);
+
   const [playbackIndex, setPlaybackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackRobot, setPlaybackRobot] = useState(null);
-
-  useEffect(() => {
-    if (robots.length > 0 && !selectedRobotId) {
-      setSelectedRobotId(robots[0].id);
-    }
-  }, [robots, selectedRobotId]);
 
   const handleSelectChange = (e) => {
     setSelectedRobotId(e.target.value);
@@ -40,7 +48,6 @@ const Dashboard = () => {
           position_y: history[index].position_y,
           orientation: history[index].orientation,
           battery: history[index].battery
-
         });
         index++;
         setPlaybackIndex(index);
@@ -48,39 +55,43 @@ const Dashboard = () => {
         clearInterval(interval);
         setIsPlaying(false);
       }
-    }, 500); // velocidad del playback (medio segundo por posición)
+    }, 500); // Velocidad del playback (0.5 seg)
   };
 
   return (
     <div style={{ padding: '16px', maxWidth: '1200px', margin: '0 auto' }}>
-      
+
       <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <select 
-          value={selectedRobotId} 
+        <select
+          value={selectedRobotId}
           onChange={handleSelectChange}
           style={{ padding: '10px', borderRadius: '8px', border: '1px solid #ccc', width: '100%', maxWidth: '300px' }}
         >
-          {robots.map(robot => (
-            <option key={robot.id} value={robot.id}>
-              {robot.name} (ID: {robot.id})
+          <option value="">Seleccione un robot</option>
+          {robotList.map((robotItem) => (
+            <option key={robotItem.id} value={robotItem.id}>
+              {robotItem.name} (ID: {robotItem.id})
             </option>
           ))}
         </select>
+
         <button
           onClick={handlePlayback}
           style={{ padding: '10px 16px', backgroundColor: '#28a745', color: '#fff', borderRadius: '8px', border: 'none', cursor: 'pointer' }}
           disabled={isPlaying}
         >
-          {isPlaying ? `Reproduciendo... (${playbackIndex}/${robotsHistory[selectedRobotId]?.length})` : "▶️ Repetir recorrido"}
+          {isPlaying
+            ? `Reproduciendo... (${playbackIndex}/${robotsHistory[selectedRobotId]?.length || 0})`
+            : "▶️ Repetir recorrido"
+          }
         </button>
       </div>
 
       {selectedRobot ? (
         <RobotCard robot={isPlaying && playbackRobot ? playbackRobot : selectedRobot} />
       ) : (
-        <p style={{color:'#777'}}>Selecciona un robot para mostrar información.</p>
+        <p style={{ color: '#777' }}>Selecciona un robot para mostrar información.</p>
       )}
-
     </div>
   );
 };
