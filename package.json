@@ -7,11 +7,13 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "start": "node index.js"
   },
   "dependencies": {
     "autoprefixer": "^10.4.21",
     "axios": "^1.8.4",
+    "express": "^4.21.2",
     "lucide-react": "^0.483.0",
     "postcss": "^8.5.3",
     "react": "^19.0.0",

@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 const Dashboard = () => {
   // Lista "hardcodeada" de robots
   const robotList = [
-    { id: 61, name: 'Localhost' },
+    // { id: 61, name: 'Localhost' }, // 
     { id: 11, name: 'Flocker001' },
     { id: 12, name: 'Flocker002' },
     { id: 13, name: 'Flocker003' },
