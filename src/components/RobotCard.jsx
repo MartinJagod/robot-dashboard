@@ -82,6 +82,14 @@ const RobotCard = ({ robot }) => {
     return Math.round(distance, 2)
   }
 
+  let remainingTime = () => {
+    let remainStr = ''
+    let hours = Math.floor(robot.remaining_time / 60)
+    let minutes = Math.floor(robot.remaining_time % 60) 
+    remainStr = `(${hours}h ${minutes}m)`
+    return remainStr
+  }
+
   let time_now = new Date()
   let time_start = new Date(robot.start_time)
   let timeDifference = time_now - time_start
@@ -156,7 +164,7 @@ const RobotCard = ({ robot }) => {
               </div>
             </div>
             <span style={{ fontSize: '12px', color: '#555' }}>
-              {Math.round(robot.battery)}%
+              {Math.round(robot.battery)}% <i>{remainingTime()}</i>
             </span>
           </div>
         </div>
