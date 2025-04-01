@@ -30,7 +30,8 @@ const Dashboard = () => {
     setPlaybackRobot(null);
   };
 
-  const selectedRobot = robots.find(robot => robot.id === selectedRobotId);
+  const selectedRobot = robots.find(robot => String(robot.id) === selectedRobotId);
+
 
   const handlePlayback = () => {
     const history = robotsHistory[selectedRobotId];

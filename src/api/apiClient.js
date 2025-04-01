@@ -1,14 +1,12 @@
+// apiClient.js limpio
 import axios from 'axios';
 
-// Función que crea la instancia de axios según la IP
-const createAxiosInstance = (robotID) => {
-  const host = robotID > 50 ? 'localhost' : `192.168.191.${robotID}`
-  return axios.create({ baseURL: `http://${host}:8000` });
+export const getRobotStatus = async (robotID) => {
+  const response = await axios.get(`/api/robot/${robotID}`);
+  return response.data;
 };
 
-// Método que la usa
-export const getRobotsStatus = async (robotID) => {
-  const api = createAxiosInstance(robotID);
-  const response = await api.get('/robot/status');
+export const getRobotsHistory = async (robotID) => {
+  const response = await axios.get(`/api/robot/${robotID}/history`);
   return response.data;
 };
