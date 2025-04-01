@@ -27,11 +27,19 @@ export const useRobots = (robotId) => {
         }
 
         robotsHistory.current[robot.id].push({
-          position_x: robot.position_x,
-          position_y: robot.position_y,
+          name: robot.name,
+          laps: robot.laps,
+          traveled_distance: robot.traveled_distance,
+          lane_completition: robot.lane_completition,
           orientation: robot.orientation,
-          timestamp: new Date().toISOString(),
-          battery: robot.battery
+          current_lane: robot.current_lane,
+          last_corner: robot.last_corner,
+          orientation: robot.orientation,
+          room_temp: robot.room_temp_measured,
+          room_hum: robot.room_hum_measured,
+          bed_temp: robot.bed_temp_measured,
+          battery: robot.battery,
+          remaining_time: robot.remaining_time
         });
       });
 

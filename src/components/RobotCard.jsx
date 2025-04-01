@@ -1,5 +1,9 @@
 import robotIcon from '../assets/robot-icon.svg';
 
+let lastPosX = 0
+let lastPosY = 0
+let lastCorner = 0
+
 const RobotCard = ({ robot }) => {
   const cols = 8;
   const rows = 20;
@@ -7,29 +11,76 @@ const RobotCard = ({ robot }) => {
   const mapWidth = cols * cellSize; // 160px
   const mapHeight = rows * cellSize; // 400px
 
-  let scalePosition = (pos, size, margin) => margin + pos * (size * (1 - 2 * margin));
+  let scalePosition = (pos, size, margin) => {
+    let pixelMargin = margin * size
+    let gridWithMargins = size - cellSize * 2
+
+    // In case of overflows
+    pos = pos < 0 ? 0 : pos
+    pos = pos > 1 ? 1 : pos
+
+    return pixelMargin + pos * gridWithMargins;
+  }
 
   let scaleX = () => {
     let posX = 0;
+    // Half cell as margin
+    const margin = 0.5/(cols-1)
+
     switch (robot.last_corner) {
       case 0: posX = 0; break;
       case 1: posX = robot.lane_completition; break;
       case 2: posX = 1; break;
       case 3: posX = 1 - robot.lane_completition; break;
     }
-    return scalePosition(posX, mapWidth, 0.1);
+
+    if (lastCorner != robot.last_corner) {
+      lastCorner = robot.last_corner
+      lastPosX = posX
+    }
+
+    if (Math.abs(lastPosX - posX) < cellSize * 2) {
+      lastPosX = posX
+      return scalePosition(posX, mapWidth, margin);
+    }
   };
 
   let scaleY = () => {
     let posY = 0;
+    // Half cell as margin
+    const margin = 0.5/(rows-1)
     switch (robot.last_corner) {
       case 0: posY = robot.lane_completition; break;
       case 1: posY = 1; break;
       case 2: posY = 1 - robot.lane_completition; break;
       case 3: posY = 0; break;
     }
-    return scalePosition(posY, mapHeight, 0.05);
+
+    if (lastCorner != robot.last_corner) {
+      lastCorner = robot.last_corner;
+      lastPosY = posY;
+    }
+
+    if (Math.abs(lastPosY - posY) < cellSize) {
+      lastPosY = posY
+      return scalePosition(posY, mapHeight, margin);
+    }
   };
+
+  let currentLaneTraveled = () => {
+    let lane_length = 0
+    switch (robot.current_lane) {
+      case 'short':
+        lane_length = robot.short_lane;
+        break;
+      case 'long':
+        lane_length = robot.long_lane;
+        break;
+    }
+    let distance = robot.lane_completition * lane_length;
+    
+    return Math.round(distance, 2)
+  }
 
   let time_now = new Date()
   let time_start = new Date(robot.start_time)
@@ -50,13 +101,13 @@ const RobotCard = ({ robot }) => {
       </h2>
 
       <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', marginBottom: '16px', fontSize: '14px', color: '#555' }}>
-        Time Working:
+        <span style={{ paddingTop: '3px' }}>Time Working:</span>
         <div style={{ backgroundColor: '#eee', padding: '4px 8px', borderRadius: '6px' }}> {workedHours} hs</div>
         <div style={{ backgroundColor: '#eee', padding: '4px 8px', borderRadius: '6px' }}> {workedMinutes} min</div>
         <div style={{ backgroundColor: '#eee', padding: '4px 8px', borderRadius: '6px' }}> {workedSeconds} sec</div>
       </div>
 
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '24px' }}>
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '24px' }}>
         <div style={{ position: 'relative' }}>
           <div
             style={{
@@ -87,9 +138,11 @@ const RobotCard = ({ robot }) => {
         <div style={{ fontSize: '14px', color: '#444' }}>
           <p><strong>Start: </strong>{time_start.toLocaleString()} </p>
           <p><strong>Laps: </strong>{robot.laps} </p>
-          <p><strong>Distance: </strong>{Math.round(robot.traveled_distance, 2)} mts</p>
-          <p><strong>Remaining Time: </strong>{}</p>
-
+          <p><strong>Distance this lane: </strong>{currentLaneTraveled()} mts</p>
+          <p><strong>Total traveled: </strong>{Math.round(robot.traveled_distance, 2)} mts</p>
+          <p><strong>Room Temperature: </strong>{Math.round(robot.room_temp, 2)}°C</p>
+          <p><strong>Bed Temperature: </strong>{Math.round(robot.bed_temp, 2)}°C</p>
+          <p><strong>Room Humidity: </strong>{Math.round(robot.room_hum, 2)}%</p>
           <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center' }}>
             <div style={{ width: '40px', height: '16px', border: '1px solid #ccc', borderRadius: '4px', overflow: 'hidden', position: 'relative', marginRight: '8px' }}>
               <div style={{ width: '40px', height: '20px', border: '1px solid #333', backgroundColor: '#eee' }}>

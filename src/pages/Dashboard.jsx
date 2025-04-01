@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 const Dashboard = () => {
   // Lista "hardcodeada" de robots
   const robotList = [
-    // { id: 61, name: 'Localhost' }, // 
+    { id: 61, name: 'Localhost' },
     { id: 11, name: 'Flocker001' },
     { id: 12, name: 'Flocker002' },
     { id: 13, name: 'Flocker003' },
@@ -45,11 +45,22 @@ const Dashboard = () => {
       if (index < history.length) {
         setPlaybackRobot({
           ...selectedRobot,
-          position_x: history[index].position_x,
-          position_y: history[index].position_y,
+          start_time: history[index].start_time,
+          name: history[index].name,
+          laps: history[index].laps,
+          traveled_distance: history[index].traveled_distance,
+          lane_completition: history[index].lane_completition,
           orientation: history[index].orientation,
-          battery: history[index].battery
+          current_lane: history[index].current_lane,
+          last_corner: history[index].last_corner,
+          orientation: history[index].orientation,
+          room_temp: history[index].room_temp_measured,
+          room_hum: history[index].room_hum_measured,
+          bed_temp: history[index].bed_temp_measured,
+          battery: history[index].battery,
+          remaining_time: history[index].remaining_time
         });
+
         index++;
         setPlaybackIndex(index);
       } else {
