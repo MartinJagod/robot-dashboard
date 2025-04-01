@@ -5,7 +5,6 @@ import { useState, useEffect } from 'react';
 const Dashboard = () => {
   // Lista "hardcodeada" de robots
   const robotList = [
-    { id: 61, name: 'Localhost' },
     { id: 11, name: 'Flocker001' },
     { id: 12, name: 'Flocker002' },
     { id: 13, name: 'Flocker003' },
@@ -30,8 +29,7 @@ const Dashboard = () => {
     setPlaybackRobot(null);
   };
 
-  const selectedRobot = robots.find(robot => String(robot.id) === selectedRobotId);
-
+  const selectedRobot = robots.find(robot => robot.id === selectedRobotId);
 
   const handlePlayback = () => {
     const history = robotsHistory[selectedRobotId];
@@ -53,7 +51,6 @@ const Dashboard = () => {
           orientation: history[index].orientation,
           current_lane: history[index].current_lane,
           last_corner: history[index].last_corner,
-          orientation: history[index].orientation,
           room_temp: history[index].room_temp_measured,
           room_hum: history[index].room_hum_measured,
           bed_temp: history[index].bed_temp_measured,

@@ -34,7 +34,6 @@ export const useRobots = (robotId) => {
           orientation: robot.orientation,
           current_lane: robot.current_lane,
           last_corner: robot.last_corner,
-          orientation: robot.orientation,
           room_temp: robot.room_temp_measured,
           room_hum: robot.room_hum_measured,
           bed_temp: robot.bed_temp_measured,
