@@ -12,9 +12,11 @@ export const useRobots = (robotId) => {
 
       setRobots(robotsArray);
 
+      // Guardar historial de cada robot
       robotsArray.forEach(robot => {
+        // Protegemos por si el robot viene vacío o nulo
         if (!robot) return;
-
+        // Convertimos las fechas
         robot.start_time = new Date(robot.start_time);
         robot.datetime = new Date(robot.datetime);
 
@@ -26,7 +28,7 @@ export const useRobots = (robotId) => {
           name: robot.name,
           laps: robot.laps,
           traveled_distance: robot.traveled_distance,
-          lane_completition: robot.lane_completition,
+          lane_completion: robot.lane_completion,
           orientation: robot.orientation,
           current_lane: robot.current_lane,
           last_corner: robot.last_corner,

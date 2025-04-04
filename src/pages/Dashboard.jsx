@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 const Dashboard = () => {
   // Lista "hardcodeada" de robots
   const robotList = [
-    { id: 61, name: 'Localhost' },
+    // { id: 61, name: 'Localhost' },
     { id: 11, name: 'Flocker001' },
     { id: 12, name: 'Flocker002' },
     { id: 13, name: 'Flocker003' },
@@ -14,7 +14,6 @@ const Dashboard = () => {
     { id: 16, name: 'Flocker006' },
     { id: 17, name: 'Flocker007' },
     { id: 18, name: 'Flocker008' },
-
   ];
 
   const [selectedRobotId, setSelectedRobotId] = useState('');
@@ -34,7 +33,7 @@ const Dashboard = () => {
 
   const selectedRobot = robots.find(robot => String(robot.id) === selectedRobotId);
 
-
+  /*
   const handlePlayback = () => {
     const history = robotsHistory[selectedRobotId];
     if (!history || history.length === 0) return;
@@ -51,7 +50,7 @@ const Dashboard = () => {
           name: history[index].name,
           laps: history[index].laps,
           traveled_distance: history[index].traveled_distance,
-          lane_completition: history[index].lane_completition,
+          lane_completion: history[index].lane_completion,
           orientation: history[index].orientation,
           current_lane: history[index].current_lane,
           last_corner: history[index].last_corner,
@@ -70,13 +69,15 @@ const Dashboard = () => {
       }
     }, 500); // Velocidad del playback (0.5 seg)
   };
+  */
 
   return (
     <div style={{ padding: '16px', maxWidth: '1200px', margin: '0 auto' }}>
 
       <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
         <select
-        id="robotSelector" name="robotSelector"
+          id="robotSelector"
+          name="robotSelector"
           value={selectedRobotId}
           onChange={handleSelectChange}
           style={{ padding: '10px', borderRadius: '8px', border: '1px solid #ccc', width: '100%', maxWidth: '300px' }}
@@ -88,7 +89,7 @@ const Dashboard = () => {
             </option>
           ))}
         </select>
-
+        {/*
         <button
           onClick={handlePlayback}
           style={{ padding: '10px 16px', backgroundColor: '#28a745', color: '#fff', borderRadius: '8px', border: 'none', cursor: 'pointer' }}
@@ -99,6 +100,7 @@ const Dashboard = () => {
             : "▶️ Repetir recorrido"
           }
         </button>
+        */}
       </div>
 
       {selectedRobot ? (

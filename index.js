@@ -12,8 +12,9 @@ const PORT = process.env.PORT || 3000;
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// 🚀 Mapeo de robots a IPs en la VPN
+// Mapeo de robots a IPs en la VPN
 const robotIpMap = {
+  '61': 'localhost',
   '11': '192.168.191.11',
   '12': '192.168.191.12',
   '13': '192.168.191.13',
@@ -22,13 +23,12 @@ const robotIpMap = {
   '16': '192.168.191.16',
   '17': '192.168.191.17',
   '18': '192.168.191.18',
-
 };
 
-// 🧠 Historial en memoria
+// Historial en memoria
 const robotHistorial = {};
 
-// 🔁 Ruta para consultar el estado del robot y guardar en historial
+// Ruta para consultar el estado del robot y guardar en historial
 app.get('/api/robot/:id', async (req, res) => {
   const robotId = req.params.id;
   const robotIp = robotIpMap[robotId];
@@ -61,14 +61,14 @@ app.get('/api/robot/:id', async (req, res) => {
   }
 });
 
-// 📤 Ruta para obtener historial del robot
+// Ruta para obtener historial del robot
 app.get('/api/robot/:id/history', (req, res) => {
   const robotId = req.params.id;
   const history = robotHistorial[robotId] || [];
   return res.json(history);
 });
 
-// 🧹 Limpieza diaria del historial a medianoche
+// Limpieza diaria del historial a medianoche
 cron.schedule('0 0 * * *', () => {
   const fecha = new Date().toISOString().split('T')[0]; // Ej: 2025-04-01
   const backupFile = path.join(__dirname, `historial-${fecha}.json`);
@@ -83,7 +83,7 @@ cron.schedule('0 0 * * *', () => {
   console.log('🧹 Historial de robots limpiado a la medianoche');
 });
 
-// 🌐 Servir contenido estático de React
+// Servir contenido estático de React
 app.use(express.static(path.join(__dirname, 'dist')));
 
 // Esta ruta DEBE ir al final, después de todas las rutas /api
@@ -97,5 +97,5 @@ app.get('*', (req, res, next) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`🟢 Servidor corriendo en http://localhost:${PORT}`);
+  console.log(`Servidor local corriendo en http://localhost:${PORT}`);
 });
