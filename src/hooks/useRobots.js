@@ -30,9 +30,9 @@ export const useRobots = (robotId) => {
           orientation: robot.orientation,
           current_lane: robot.current_lane,
           last_corner: robot.last_corner,
-          room_temp: robot.room_temp,
-          room_hum: robot.room_hum,
-          bed_temp: robot.bed_temp,
+            room_temp: robot.room_temp,
+  room_hum: robot.room_hum,
+  bed_temp: robot.bed_temp,
           battery: robot.battery,
           remaining_time: robot.remaining_time,
           timestamp: new Date().toISOString()
