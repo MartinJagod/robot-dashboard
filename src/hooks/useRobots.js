@@ -1,43 +1,60 @@
 import { useState, useEffect, useRef } from 'react';
-import { getRobotsData } from '../api/apiClient';
+import { getRobotsStatus } from '../api/apiClient';
 
-export const useRobots = () => {
+export const useRobots = (robotId) => {
   const [robots, setRobots] = useState([]);
-  
-  // Aquí almacenaremos el historial de posiciones de cada robot
   const robotsHistory = useRef({});
 
   const fetchData = async () => {
     try {
-      const allRobotsData = await getRobotsData();
-      const robotsArray = allRobotsData.data;
+      const allRobotsData = await getRobotsStatus(robotId);
+      const robotsArray = Array.isArray(allRobotsData) ? allRobotsData : [allRobotsData];
 
       setRobots(robotsArray);
 
-      // Guardar historial de cada robot
       robotsArray.forEach(robot => {
+        if (!robot) return;
+
+        robot.start_time = new Date(robot.start_time);
+        robot.datetime = new Date(robot.datetime);
+
         if (!robotsHistory.current[robot.id]) {
           robotsHistory.current[robot.id] = [];
         }
+
         robotsHistory.current[robot.id].push({
-          position_x: robot.position_x,
-          position_y: robot.position_y,
+          name: robot.name,
+          laps: robot.laps,
+          traveled_distance: robot.traveled_distance,
+          lane_completition: robot.lane_completition,
           orientation: robot.orientation,
-          timestamp: new Date().toISOString(),
-          battery: robot.battery
+          current_lane: robot.current_lane,
+          last_corner: robot.last_corner,
+          room_temp: robot.room_temp,
+          room_hum: robot.room_hum,
+          bed_temp: robot.bed_temp,
+          battery: robot.battery,
+          remaining_time: robot.remaining_time,
+          timestamp: new Date().toISOString()
         });
       });
 
     } catch (error) {
       console.error("Error trayendo datos de robots:", error);
+      setRobots([]);
     }
   };
 
   useEffect(() => {
-    fetchData();
-    const interval = setInterval(fetchData, 1000);
-    return () => clearInterval(interval);
-  }, []);
+    if (robotId) {
+      if (!robotsHistory.current[robotId]) {
+        robotsHistory.current[robotId] = [];
+      }
+      fetchData();
+      const interval = setInterval(fetchData, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [robotId]);
 
   return { robots, robotsHistory: robotsHistory.current };
 };
