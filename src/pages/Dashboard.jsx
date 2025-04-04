@@ -13,6 +13,8 @@ const Dashboard = () => {
     { id: 15, name: 'Flocker005' },
     { id: 16, name: 'Flocker006' },
     { id: 17, name: 'Flocker007' },
+    { id: 18, name: 'Flocker008' },
+
   ];
 
   const [selectedRobotId, setSelectedRobotId] = useState('');
@@ -53,7 +55,6 @@ const Dashboard = () => {
           orientation: history[index].orientation,
           current_lane: history[index].current_lane,
           last_corner: history[index].last_corner,
-          orientation: history[index].orientation,
           room_temp: history[index].room_temp_measured,
           room_hum: history[index].room_hum_measured,
           bed_temp: history[index].bed_temp_measured,
@@ -75,6 +76,7 @@ const Dashboard = () => {
 
       <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
         <select
+        id="robotSelector" name="robotSelector"
           value={selectedRobotId}
           onChange={handleSelectChange}
           style={{ padding: '10px', borderRadius: '8px', border: '1px solid #ccc', width: '100%', maxWidth: '300px' }}

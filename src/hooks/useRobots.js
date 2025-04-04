@@ -8,17 +8,13 @@ export const useRobots = (robotId) => {
   const fetchData = async () => {
     try {
       const allRobotsData = await getRobotsStatus(robotId);
-
-      // Protección contra undefined
-      const robotsArray = Array.isArray(allRobotsData?.data) ? allRobotsData.data : [];
+      const robotsArray = Array.isArray(allRobotsData) ? allRobotsData : [allRobotsData];
 
       setRobots(robotsArray);
 
-      // Guardar historial de cada robot
       robotsArray.forEach(robot => {
-        if (!robot) return; // Protegemos por si el robot viene vacío o nulo
+        if (!robot) return;
 
-        // Convertimos las fechas
         robot.start_time = new Date(robot.start_time);
         robot.datetime = new Date(robot.datetime);
 
@@ -34,23 +30,26 @@ export const useRobots = (robotId) => {
           orientation: robot.orientation,
           current_lane: robot.current_lane,
           last_corner: robot.last_corner,
-          orientation: robot.orientation,
-          room_temp: robot.room_temp_measured,
-          room_hum: robot.room_hum_measured,
-          bed_temp: robot.bed_temp_measured,
+          room_temp: robot.room_temp,
+          room_hum: robot.room_hum,
+          bed_temp: robot.bed_temp,
           battery: robot.battery,
-          remaining_time: robot.remaining_time
+          remaining_time: robot.remaining_time,
+          timestamp: new Date().toISOString()
         });
       });
 
     } catch (error) {
       console.error("Error trayendo datos de robots:", error);
-      setRobots([]); // En caso de error, dejamos robots vacío para evitar otros errores
+      setRobots([]);
     }
   };
 
   useEffect(() => {
     if (robotId) {
+      if (!robotsHistory.current[robotId]) {
+        robotsHistory.current[robotId] = [];
+      }
       fetchData();
       const interval = setInterval(fetchData, 1000);
       return () => clearInterval(interval);

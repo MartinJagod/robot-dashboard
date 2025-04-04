@@ -8,7 +8,7 @@ import fs from 'fs';
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Necesario si usás ESModules
+// ESModules fix
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -21,6 +21,8 @@ const robotIpMap = {
   '15': '192.168.191.15',
   '16': '192.168.191.16',
   '17': '192.168.191.17',
+  '18': '192.168.191.18',
+
 };
 
 // 🧠 Historial en memoria
@@ -36,10 +38,12 @@ app.get('/api/robot/:id', async (req, res) => {
   }
 
   try {
+    console.log(`📡  Consultando robot ${robotId} en ${robotIp}`);
+    console.log(`http://${robotIp}:8000/robot/status`)
     const response = await axios.get(`http://${robotIp}:8000/robot/status`);
-    const robotData = response.data;
+    const robotData = await response.data;
+    console.log(`🤖 Datos del robot ${robotId}:`, robotData);
 
-    // Guardar historial
     if (!robotHistorial[robotId]) robotHistorial[robotId] = [];
 
     robotHistorial[robotId].push({
@@ -50,10 +54,10 @@ app.get('/api/robot/:id', async (req, res) => {
       battery: robotData.battery,
     });
 
-    res.json(robotData);
+    return res.json(robotData);
   } catch (err) {
-    console.error('Error consultando robot:', err.message);
-    res.status(500).json({ error: 'No se pudo conectar con el robot' });
+    console.error('❌ Error consultando robot:', err.message);
+    return res.status(500).json({ error: 'No se pudo conectar con el robot' });
   }
 });
 
@@ -61,7 +65,7 @@ app.get('/api/robot/:id', async (req, res) => {
 app.get('/api/robot/:id/history', (req, res) => {
   const robotId = req.params.id;
   const history = robotHistorial[robotId] || [];
-  res.json(history);
+  return res.json(history);
 });
 
 // 🧹 Limpieza diaria del historial a medianoche
@@ -72,7 +76,6 @@ cron.schedule('0 0 * * *', () => {
   fs.writeFileSync(backupFile, JSON.stringify(robotHistorial, null, 2), 'utf-8');
   console.log(`🗂️ Historial guardado en ${backupFile}`);
 
-  // Limpiar historial
   for (const id in robotHistorial) {
     robotHistorial[id] = [];
   }
@@ -80,13 +83,17 @@ cron.schedule('0 0 * * *', () => {
   console.log('🧹 Historial de robots limpiado a la medianoche');
 });
 
-
 // 🌐 Servir contenido estático de React
 app.use(express.static(path.join(__dirname, 'dist')));
 
-// 🎯 Soporte para React Router
-app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+// Esta ruta DEBE ir al final, después de todas las rutas /api
+app.get('*', (req, res, next) => {
+  if (req.originalUrl.startsWith('/api')) {
+    return next(); // Dejá que Express diga "404" si no hay match en /api
+  }
+
+  // Si es cualquier otra ruta (como /dashboard, /robot/14, etc.)
+  return res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
 app.listen(PORT, () => {
