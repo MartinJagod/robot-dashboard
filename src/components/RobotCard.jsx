@@ -29,9 +29,9 @@ const RobotCard = ({ robot }) => {
 
     switch (robot.last_corner) {
       case 0: posX = 0; break;
-      case 1: posX = robot.lane_completition; break;
+      case 1: posX = robot.lane_completion; break;
       case 2: posX = 1; break;
-      case 3: posX = 1 - robot.lane_completition; break;
+      case 3: posX = 1 - robot.lane_completion; break;
     }
 
     if (lastCorner != robot.last_corner) {
@@ -50,9 +50,9 @@ const RobotCard = ({ robot }) => {
     // Half cell as margin
     const margin = 0.5/(rows-1)
     switch (robot.last_corner) {
-      case 0: posY = robot.lane_completition; break;
+      case 0: posY = robot.lane_completion; break;
       case 1: posY = 1; break;
-      case 2: posY = 1 - robot.lane_completition; break;
+      case 2: posY = 1 - robot.lane_completion; break;
       case 3: posY = 0; break;
     }
 
@@ -77,9 +77,26 @@ const RobotCard = ({ robot }) => {
         lane_length = robot.long_lane;
         break;
     }
-    let distance = robot.lane_completition * lane_length;
-    
-    return Math.round(distance, 2)
+    let distance = robot.lane_completion * lane_length;
+
+    return metersToFeet(distance)
+  }
+
+  let remainingTime = () => {
+    let remainStr = ''
+    let hours = Math.floor(robot.remaining_time / 60)
+    let minutes = Math.floor(robot.remaining_time % 60)
+    remainStr = `(${hours}h ${minutes}m)`
+    return remainStr
+  }
+
+  let metersToFeet = (meters) => {
+    let feet = meters * 3.28084
+    return Math.round(feet, 2);
+  }
+
+  let celsiusToFahrenheit = (celsius) => {
+    return Math.round(celsius * 9 / 5 + 32, 1);
   }
 
   let time_now = new Date()
@@ -138,10 +155,10 @@ const RobotCard = ({ robot }) => {
         <div style={{ fontSize: '14px', color: '#444' }}>
           <p><strong>Start: </strong>{time_start.toLocaleString()} </p>
           <p><strong>Laps: </strong>{robot.laps} </p>
-          <p><strong>Distance this lane: </strong>{currentLaneTraveled()} mts</p>
-          <p><strong>Total traveled: </strong>{Math.round(robot.traveled_distance, 2)} mts</p>
-          <p><strong>Room Temperature: </strong>{Math.round(robot.room_temp, 2)}°C</p>
-          <p><strong>Bed Temperature: </strong>{Math.round(robot.bed_temp, 2)}°C</p>
+          <p><strong>Distance this lane: </strong>{currentLaneTraveled()} fts</p>
+          <p><strong>Total traveled: </strong>{metersToFeet(robot.traveled_distance)} fts</p>
+          <p><strong>Room Temperature: </strong>{celsiusToFahrenheit(robot.room_temp)}°F</p>
+          <p><strong>Bed Temperature: </strong>{celsiusToFahrenheit(robot.bed_temp)}°F</p>
           <p><strong>Room Humidity: </strong>{Math.round(robot.room_hum, 2)}%</p>
           <div style={{ marginTop: '8px', display: 'flex', alignItems: 'center' }}>
             <div style={{ width: '40px', height: '16px', border: '1px solid #ccc', borderRadius: '4px', overflow: 'hidden', position: 'relative', marginRight: '8px' }}>
@@ -156,7 +173,7 @@ const RobotCard = ({ robot }) => {
               </div>
             </div>
             <span style={{ fontSize: '12px', color: '#555' }}>
-              {Math.round(robot.battery)}%
+              {Math.round(robot.battery)}% <i>{remainingTime()}</i>
             </span>
           </div>
         </div>
