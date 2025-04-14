@@ -1,25 +1,11 @@
 import { useRobots } from '../hooks/useRobots';
 import RobotCard from '../components/RobotCard';
+import RobotSelector from '../components/RobotSelector';
 import { useState, useEffect } from 'react';
 
 const Dashboard = () => {
-  // Lista "hardcodeada" de robots
-  const robotList = [
-    // { id: 61, name: 'Localhost' },
-    { id: 11, name: 'Flocker001' },
-    { id: 12, name: 'Flocker002' },
-    { id: 13, name: 'Flocker003' },
-    { id: 14, name: 'Flocker004' },
-    { id: 15, name: 'Flocker005' },
-    { id: 16, name: 'Flocker006' },
-    { id: 17, name: 'Flocker007' },
-    { id: 18, name: 'Flocker008' },
-  ];
-
   const [selectedRobotId, setSelectedRobotId] = useState('');
-
   const { robots, robotsHistory } = useRobots(selectedRobotId);
-
   const [playbackIndex, setPlaybackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackRobot, setPlaybackRobot] = useState(null);
@@ -31,8 +17,7 @@ const Dashboard = () => {
     setPlaybackRobot(null);
   };
 
-  const selectedRobot = robots.find(robot => String(robot.id) === selectedRobotId);
-
+  const selectedRobot = robots[0];
   /*
   const handlePlayback = () => {
     const history = robotsHistory[selectedRobotId];
@@ -75,20 +60,10 @@ const Dashboard = () => {
     <div style={{ padding: '16px', maxWidth: '1200px', margin: '0 auto' }}>
 
       <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <select
-          id="robotSelector"
-          name="robotSelector"
-          value={selectedRobotId}
-          onChange={handleSelectChange}
-          style={{ padding: '10px', borderRadius: '8px', border: '1px solid #ccc', width: '100%', maxWidth: '300px' }}
-        >
-          <option value="">Seleccione un robot</option>
-          {robotList.map((robotItem) => (
-            <option key={robotItem.id} value={robotItem.id}>
-              {robotItem.name} (ID: {robotItem.id})
-            </option>
-          ))}
-        </select>
+        <RobotSelector
+          selectedId={selectedRobotId}
+          changeEvent={handleSelectChange}
+        />
         {/*
         <button
           onClick={handlePlayback}
@@ -103,7 +78,7 @@ const Dashboard = () => {
         */}
       </div>
 
-      {selectedRobot ? (
+      {selectedRobot !== null && selectedRobot !== undefined ? (
         <RobotCard robot={isPlaying && playbackRobot ? playbackRobot : selectedRobot} />
       ) : (
         <p style={{ color: '#777' }}>Selecciona un robot para mostrar información.</p>
