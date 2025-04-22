@@ -67,6 +67,14 @@ const RobotCard = ({ robot }) => {
     }
   };
 
+  let calculateOrientationOffset = () => {
+    let offset = 180
+    if (robot.lane_completion == 0) {
+      offset -= robot.last_corner * 90
+    }
+    return offset
+  }
+
   let currentLaneTraveled = () => {
     let lane_length = 0
     switch (robot.current_lane) {
@@ -142,7 +150,7 @@ const RobotCard = ({ robot }) => {
             alt={robot.name}
             style={{
               position: 'absolute',
-              transform: `rotate(${180 - robot.orientation}deg)`,
+              transform: `rotate(${calculateOrientationOffset() - robot.orientation}deg)`,
               left: `${scaleX()}px`,
               top: `${scaleY()}px`,
               width: '20px',

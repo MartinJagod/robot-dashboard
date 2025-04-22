@@ -14,15 +14,15 @@ const __dirname = path.dirname(__filename);
 
 // Mapeo de robots a IPs en la VPN
 const robotIpMap = {
-  '61': 'localhost',
-  '11': '192.168.191.11',
-  '12': '192.168.191.12',
-  '13': '192.168.191.13',
-  '14': '192.168.191.14',
-  '15': '192.168.191.15',
-  '16': '192.168.191.16',
-  '17': '192.168.191.17',
-  '18': '192.168.191.18',
+  '0': {ip: 'localhost', name: 'localhost'},
+  '11': {ip: '192.168.191.11', name: 'Flocker001'},
+  '12': {ip: '192.168.191.12', name: 'Flocker002'},
+  '13': {ip: '192.168.191.13', name: 'Flocker003'},
+  '14': {ip: '192.168.191.14', name: 'Flocker004'},
+  '15': {ip: '192.168.191.15', name: 'Flocker005'},
+  '16': {ip: '192.168.191.16', name: 'Flocker006'},
+  '17': {ip: '192.168.191.17', name: 'Flocker007'},
+  '18': {ip: '192.168.191.18', name: 'Flocker008'},
 };
 
 // Historial en memoria
@@ -31,18 +31,18 @@ const robotHistorial = {};
 // Ruta para consultar el estado del robot y guardar en historial
 app.get('/api/robot/:id', async (req, res) => {
   const robotId = req.params.id;
-  const robotIp = robotIpMap[robotId];
+  const robotIp = robotIpMap[robotId].ip;
 
   if (!robotIp) {
     return res.status(404).json({ error: 'Robot no encontrado' });
   }
 
   try {
-    console.log(`📡  Consultando robot ${robotId} en ${robotIp}`);
+    console.log(`Consultando robot ${robotId} en ${robotIp}`);
     console.log(`http://${robotIp}:8000/robot/status`)
     const response = await axios.get(`http://${robotIp}:8000/robot/status`);
     const robotData = await response.data;
-    console.log(`🤖 Datos del robot ${robotId}:`, robotData);
+    console.log(`Datos del robot ${robotId}:`, robotData);
 
     if (!robotHistorial[robotId]) robotHistorial[robotId] = [];
 
@@ -56,7 +56,7 @@ app.get('/api/robot/:id', async (req, res) => {
 
     return res.json(robotData);
   } catch (err) {
-    console.error('❌ Error consultando robot:', err.message);
+    console.error('Error consultando robot:', err.message);
     return res.status(500).json({ error: 'No se pudo conectar con el robot' });
   }
 });
@@ -68,19 +68,38 @@ app.get('/api/robot/:id/history', (req, res) => {
   return res.json(history);
 });
 
+app.get('/api/connections', async (req, res) => {
+  const checks = Object.entries(robotIpMap).map(async ([id, robot]) => {
+    try {
+      const response = await axios.get(`http://${robot.ip}:8000/`, { timeout: 2000 });
+      if (response.status === 200) {
+        return { id, name: robot.name };
+      }
+    } catch (error) {
+      console.error(`Error con robot ${id} (${robot.ip}):`, error.message);
+    }
+    return null;
+  });
+
+  const results = await Promise.all(checks);
+  const connectedRobots = results.filter(Boolean); // elimina nulls
+
+  return res.json(connectedRobots);
+});
+
 // Limpieza diaria del historial a medianoche
 cron.schedule('0 0 * * *', () => {
   const fecha = new Date().toISOString().split('T')[0]; // Ej: 2025-04-01
   const backupFile = path.join(__dirname, `historial-${fecha}.json`);
 
   fs.writeFileSync(backupFile, JSON.stringify(robotHistorial, null, 2), 'utf-8');
-  console.log(`🗂️ Historial guardado en ${backupFile}`);
+  console.log(`Historial guardado en ${backupFile}`);
 
   for (const id in robotHistorial) {
     robotHistorial[id] = [];
   }
 
-  console.log('🧹 Historial de robots limpiado a la medianoche');
+  console.log('Historial de robots limpiado a la medianoche');
 });
 
 // Servir contenido estático de React
