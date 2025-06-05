@@ -1,70 +1,13 @@
 /* src/styles/Dashboard.css */
 /* src/styles/Dashboard.css (o tu hoja global) */
-.dashboard-wrapper {
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    height: 100vh;         /* ocupa toda la pantalla */
-    background-color: #f8f9fa; /* gris claro */
-    font-family: 'Inter', sans-serif;
-    max-width: 1800px;
-    margin: 0 auto; /* 👈 centra horizontalmente */
-  }
-  
-  .dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem 2rem;   /* 4 * 0.25rem = 1rem, 8 * 0.25rem = 2rem */
-    background-color: #ffffff; /* blanco */
-  }
-.dashboard-content {
-    display: flex;          /* fila horizontal */
-    gap: 0.2rem;
-    flex-direction: row;
-    padding: 2rem 0rem;
-    height: calc(100vh - 60px);   /* ⬅︎ solo controla alto; NO divide el ancho */
-   
-  }
-  
-  .sections-wrapper {
-    flex: 0 0 87%;          /* 80 % del ancho */
-    display: flex;
-    flex-direction: column;
-    gap: 24px;
-    overflow-y: auto;
-    scrollbar-width: none; 
-  }
-  
-  .info-sidebar {
-    flex: 0 0 15%;          /* 20 % del ancho */
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-  }
-  
-  
-  .info-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    gap: 4px;
-    padding: 12px;
-    border-radius: 8px;
-    background: #ffffff;
-    box-shadow: 0 1px 4px rgba(0,0,0,.12);
-    text-align: center;
-    font-family: 'Inter', sans-serif;
-  }
-  
-  .info-icon   { margin: 0 auto 4px; }
+.info-icon   { margin: 0 auto 4px; }
 
-  .robot-icon {
+.robot-icon {
   pointer-events: none;
   transition: left 7.5s linear, top 7.5s linear, transform 7.5s linear;
 }
 
- .spinner-overlay {
+.spinner-overlay {
   position: absolute;
   top: 0; left: 0;
   width: 100%; height: 100%;
@@ -91,24 +34,24 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
- .house-start {
-    display: flex
-;
-    position: relative;
-    top: 147px;
-    left: 980px;
+.house-start {
+  display: flex
+  ;
+  position: relative;
+  top: 147px;
+  left: 980px;
 }
 
 .hamburger {
-    position: fixed;
-    top: 9rem;
-    left: 0;
-    background: transparent;
-    color: #e86f1a;
-    border: none;
-    font-size: 1.5rem;
-    z-index: 1000;
-    cursor: pointer;
+  position: fixed;
+  top: 9rem;
+  left: 0;
+  background: transparent;
+  color: #e86f1a;
+  border: none;
+  font-size: 1.5rem;
+  z-index: 1;
+  cursor: pointer;
 }
 
 .sidebar{
@@ -119,7 +62,7 @@
   height: 82%;
   background: #E86F1A;
   border-radius: 0% 25px 0% 0%;
-
+  
   color: #fff;
   padding: 1rem 1.2rem;
   transition: left .3s ease;
@@ -272,3 +215,61 @@
   text-decoration: underline;
   outline: none;
 }
+
+.dashboard-wrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100vh;         /* ocupa toda la pantalla */
+    background-color: #f8f9fa; /* gris claro */
+    font-family: 'Inter', sans-serif;
+    max-width: 1800px;
+    margin: 0 auto; /* 👈 centra horizontalmente */
+  }
+  
+  .dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;   /* 4 * 0.25rem = 1rem, 8 * 0.25rem = 2rem */
+    background-color: #ffffff; /* blanco */
+  }
+.dashboard-content {
+    display: flex;          /* fila horizontal */
+    gap: 0.2rem;
+    flex-direction: row;
+    padding: 2rem 0rem;
+    height: calc(100vh - 60px);   /* ⬅︎ solo controla alto; NO divide el ancho */
+  }
+  
+  .sections-wrapper {
+    flex: 0 0 87%;          /* 80 % del ancho */
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    overflow-y: auto;
+    scrollbar-width: none; 
+    align-items: end;
+  }
+  
+  .info-sidebar {
+    flex: 0 0 15%;          /* 20 % del ancho */
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+  
+  
+  .info-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    padding: 12px;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 1px 4px rgba(0,0,0,.12);
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+  }
+  

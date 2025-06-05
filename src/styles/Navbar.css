@@ -112,7 +112,8 @@
     background-color: white;
     border-radius: 1rem; /* rounded-lg */
     display: flex;
-    justify-content: end;
+    margin-left: 10px;
+        max-width: 87%;
   }
   
   .heatmap-title {
@@ -138,7 +139,8 @@
   
   .dashboard-content {
     display: flex;
-    flex-direction: column;
+   
+
   }
   .heatmap-body {
     display: flex;

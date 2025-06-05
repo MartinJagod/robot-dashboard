@@ -329,21 +329,21 @@ const loadingHistory =
    robotPosition={{ x: safePoint.x, y: safePoint.y }}/>
           <Section data={bedGrid} type="temperature" title="SOIL Temperature"
             robotPosition={{ x: safePoint.x, y: safePoint.y }}
-  robotOrientation={safePoint.orientation} />
-        </div>
+            robotOrientation={safePoint.orientation} />
+</div>
 
         <InfoSidebar
             temp={safePoint.tempF}
-  hum={safePoint.hum}
-  bedTemp={safePoint.bedF}
-          step={idx + 1}
-          lap={lapRequested}
-          distance={safePoint.distance}
-        />
-      </div>
+            hum={safePoint.hum}
+            bedTemp={safePoint.bedF}
+            step={idx + 1}
+            lap={lapRequested}
+            distance={safePoint.distance}
+            />
+            </div>
 
   {(loadingHistory || loadingInterpolation) && (
-  <div className="spinner-overlay">
+    <div className="spinner-overlay">
     <div className="spinner"></div>
     <p>{loadingHistory ? 'Loading history...' : 'Processing data...'}</p>
   </div>
