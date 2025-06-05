@@ -24,13 +24,13 @@ const RobotSelector = ({ selectedId, changeEvent }) => {
 		}
 	};
 
-	useEffect(() => {
+/* 	useEffect(() => {
 		fetchConnectedRobots();
 		const interval = setInterval(() => {
 			fetchConnectedRobots();
 		}, 60000);
 		return () => clearInterval(interval);
-	}, []);
+	}, []); */
 
 	return (
 		<select

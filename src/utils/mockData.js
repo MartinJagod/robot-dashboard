@@ -1,5 +1,5 @@
 
-export const generateMock = (rows = 8, columns = 80, min = 60, max = 90) => {
+export const generateMock = (rows = 8, columns = 80, min = 82, max = 94) => {
     const obj = {};
     for (let y = 0; y < rows; y++) {
       for (let x = 0; x < columns; x++) {

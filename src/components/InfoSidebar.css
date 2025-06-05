@@ -1,0 +1,41 @@
+/* src/components/InfoSidebar.css */
+.info-sidebar {
+    /* 20 % de la vista, el ancho exacto lo fija el contenedor padre con flex‑basis,
+       pero incluimos aquí la disposición interna y cualquier ajuste de color de fondo */
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: start;
+    margin-left: 1%;
+   
+
+  }
+  
+  .info-card {
+    display: flex;
+    flex-direction: column;
+    width: 40%;
+    justify-content: center;
+    gap: 3px;
+    padding: 7px;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 1px 4px rgba(0,0,0,.12);
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+
+  }
+  
+  .info-label  { font-size: 0.6rem; color: #555; text-transform: uppercase; }
+  .info-value  { font-size: 1.5rem; font-weight: 800; }
+  .info-icon   {  margin: 0 auto; font-size: 0.9rem; justify-self: center; }
+  
+  /* Colores por tarjeta (opcional) */
+  .info-card:nth-child(3) .info-value,
+  .info-card:nth-child(4) .info-value,
+  .info-card:nth-child(5) .info-value { color:#ff8c00; font-size: 0.9rem; } /* tiempos */
+  .info-card:nth-child(6) .info-value { color:#e63946; font-size: 0.8rem; }  /* distancia */
+  .info-card:nth-child(7) .info-value { color:#e63946; font-size: 0.7rem; }  /* distancia */
+
+  
+  

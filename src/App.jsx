@@ -8,8 +8,15 @@ function App() {
 
   return (
     <div className="min-h-screen bg-neutral-900 text-white">
+
+      {/* Contenido */}
+      <main>
+        {/* {view === 'dashboard' && <Dashboard />}
+        {view === 'heatmap' && <HeatmapDashboard />} */}
+        <HeatmapDashboard />
+      </main>
       {/* Barra de navegación */}
-      <nav className="flex space-x-4 p-4 bg-gray-800">
+     {/*  <nav className="flex space-x-4 p-4 bg-gray-800">
         <button
           onClick={() => setView('dashboard')}
           className={`px-4 py-2 rounded ${view === 'dashboard' ? 'bg-blue-600' : 'bg-gray-700'}`}
@@ -22,13 +29,7 @@ function App() {
         >
           Heatmap
         </button>
-      </nav>
-
-      {/* Contenido */}
-      <main>
-        {view === 'dashboard' && <Dashboard />}
-        {view === 'heatmap' && <HeatmapDashboard />}
-      </main>
+      </nav> */}
     </div>
   );
 }

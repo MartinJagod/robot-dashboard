@@ -5,7 +5,7 @@ const CorralMap = ({ robots }) => {
   const mapHeight = 400;
 
   const scaleX = (posX) => (posX + 0.5) * mapWidth;
-  const scaleY = (posY) => (0.5 - posY) * mapHeight;
+  const scaleY = (posY) => (0.5 + posY) * mapHeight;
 
   return (
     <div style={{ 

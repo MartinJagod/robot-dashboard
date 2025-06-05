@@ -1,0 +1,46 @@
+/* HeatmapGrid.css */
+
+.heatmap-wrapper {
+   
+    width: fit-content;
+    background-color: white;
+  }
+  
+  .heatmap-title {
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 0.8rem;
+    text-align: center;
+}
+  
+  .heatmap-grid {
+    display: grid;
+    gap: 1px;
+    border-radius: 0.8rem; /* 8px */
+    overflow: hidden;
+    border: solid 3px #777
+  }
+  
+  .heatmap-cell {
+    width: 12px;
+    height: 12px;
+    border: 0.5px solid #a9a9a9;
+  }
+
+  .farm-info-box3{
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-right: 2rem;
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+    font-size: 0.6rem;
+    width: 10%;
+  }
+  
+  .house-start {
+    display: flex;
+    position: relative;
+    top:15px;
+    left: 5px;
+  }

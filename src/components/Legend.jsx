@@ -1,36 +1,37 @@
 // src/components/Legend.jsx
 import React from 'react';
 import { getColorForValue } from './HeatmapGrid';
+import './Legend.css';
 
 const ranges = {
-  temperature: [60, 65, 69, 73, 77, 82, 90],
-  humidity:    [0, 40, 55, 70, 100],
-  combined:    [0, 40, 55, 70, 100],
+  temperature: [64,72, 76, 81, 85, 90, 95, 100],
+  humidity:    [20, 30, 40, 45, 50, 55, 60, 70, 80],
+  combined:    [83.5, 85.0, 86.5, 88, 89.5, 91, 92.5, 94, 98],
 };
 
 const Legend = ({ type }) => {
-  const stops = ranges[type];
+  const stops   = ranges[type];
+  const format1 = n => Number(n).toFixed(1);
+
+  // Tomamos todos menos el último valor y los invertimos (mayor → menor)
+  const reversedStops = stops.slice(0).reverse();
+
   return (
-    <div className="flex flex-col gap-1 ml-4 select-none max-w-[200px]">
-      {stops.slice(0, -1).map((min, i) => {
-        const max = stops[i + 1];
-        const mid = (min + max) / 2;
-        const label = type === 'temperature'
-          ? `${min}°F – ${max}°F`
-          : `${min}% – ${max}%`;
+    <div className="legend-wrapper">
+      {reversedStops.map((min, i) => {
+        // Primer bloque (i === 0) mostrará “> valor”
+        const label =
+          i == 0
+            ? `> ${format1(min)}${type === 'temperature' ? '°F' : '%'}`
+            : `${format1(min)}${type === 'temperature' ? '°F' : '%'}`;
+
         return (
-          <div key={i} className="flex items-center gap-2">
+          <div key={i} className="legend-item">
             <span
-              style={{
-                display: 'inline-block',
-                width: 16,
-                height: 16,
-                backgroundColor: getColorForValue(mid, type),
-                border: '1px solid #555',
-                borderRadius: 2,
-              }}
+              className="legend-color-box"
+              style={{ backgroundColor: getColorForValue(min, type) }}
             />
-            <span className="whitespace-nowrap text-sm">{label}</span>
+            <span className="legend-label">{label}</span>
           </div>
         );
       })}
