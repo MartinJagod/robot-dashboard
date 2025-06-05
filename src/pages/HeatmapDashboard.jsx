@@ -174,13 +174,19 @@ export default function HeatmapDashboard() {
   }, [selectedDate]);
 
   /* ──── DATOS robot (History + Real-time) ──── */
-  const { history } = useRobotData({
+  const { history,  live, lap } = useRobotData({
     name: 'Flocker004',
     date: selectedDate,
     mode,                        // 'history' | 'realTime'
     lapRequested,
     pollInterval: 9000           // 9 s
   });
+  /* ──── SINCRONIZAR lapRequested con lap en Real-time ──── */
+useEffect(() => {
+  if (mode === 'realTime' && Number.isFinite(lap)) {
+    setLapRequested(lap);
+  }
+}, [mode, lap]);
 /* Punto actual protegido ------------------------------------------- */
 const currentPoint =
   mode === 'history'
