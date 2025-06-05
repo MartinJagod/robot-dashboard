@@ -338,7 +338,7 @@ const loadingHistory =
             bedTemp={safePoint.bedF}
             step={idx + 1}
             lap={lapRequested}
-            distance={safePoint.distance}
+            distance={safePoint.traveled_distance}
             />
             </div>
 
