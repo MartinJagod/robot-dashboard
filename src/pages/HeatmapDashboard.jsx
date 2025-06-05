@@ -207,49 +207,64 @@ const safePoint = currentPoint ?? {
     setLapFinished(false);
   }, [history]);
 
-  /* ──── Animación SOLO en History ──── */
-  useEffect(() => {
-    if (mode !== 'history' || !history.length) return;
+ /* Animación SOLO en History */
+useEffect(() => {
+  if (mode !== 'history' || !history.length) return;
 
-    const interval = Math.max(MIN_STEP, TARGET_MS / history.length);
-    let i = 0;
+  const interval = Math.max(MIN_STEP, TARGET_MS / history.length);
+  let i = 0;
 
-    const id = setInterval(() => {
-      setIdx(i++);
-      if (i >= history.length) {
-        clearInterval(id);
-        setLapFinished(true);
-      }
-    }, interval);
+  const id = setInterval(() => {
+    setIdx(i++);
+    if (i >= history.length) {
+      clearInterval(id);
+      setLapFinished(true);
+    }
+  }, interval);
 
-    return () => clearInterval(id);
-  }, [mode, history]);
-
+  return () => clearInterval(id);
+}, [mode, history]);
   /* ──── Punto actual del robot ──── */
 const p    = { ...safePoint, distance: safePoint.traveled_distance * 3.28084 };
 
-  /* ──── Acumulación de grids SOLO en History ──── */
-  useEffect(() => {
-    if (mode !== 'history' || !history.length || lapFinished) return;
-    const p = safePoint;
-    const key = `${p.x}-${p.y}`;
+  /* Acumulación incremental  (History + Real-time) */
+useEffect(() => {
+  if (!history.length) return;
 
-    setTempGrid(prev => ({
-      ...prev,
-      [key]: { sum: (prev[key]?.sum ?? 0) + p.tempF,
-               count: (prev[key]?.count ?? 0) + 1 }
-    }));
-    setHumGrid(prev => ({
-      ...prev,
-      [key]: { sum: (prev[key]?.sum ?? 0) + p.hum,
-               count: (prev[key]?.count ?? 0) + 1 }
-    }));
-    setBedGrid(prev => ({
-      ...prev,
-      [key]: { sum: (prev[key]?.sum ?? 0) + p.bedF,
-               count: (prev[key]?.count ?? 0) + 1 }
-    }));
-  }, [mode, idx, history, lapFinished, currentPoint]);
+  // ◀ punto a sumar:
+  //    - En History → el que marca la animación (safePoint = history[idx])
+  //    - En Real-time → el último punto recién llegado
+  const p =
+    mode === 'history'
+      ? safePoint
+      : history[history.length - 1];
+
+  if (!Number.isFinite(p.x) || !Number.isFinite(p.y)) return;
+  const key = `${p.x}-${p.y}`;
+
+  setTempGrid(prev => ({
+    ...prev,
+    [key]: { sum: (prev[key]?.sum ?? 0) + p.tempF,
+             count: (prev[key]?.count ?? 0) + 1 }
+  }));
+
+  setHumGrid(prev => ({
+    ...prev,
+    [key]: { sum: (prev[key]?.sum ?? 0) + p.hum,
+             count: (prev[key]?.count ?? 0) + 1 }
+  }));
+
+  setBedGrid(prev => ({
+    ...prev,
+    [key]: { sum: (prev[key]?.sum ?? 0) + p.bedF,
+             count: (prev[key]?.count ?? 0) + 1 }
+  }));
+}, [
+  history.length,   // nuevo punto live cambia el length
+  idx,              // avanza la animación
+  mode
+]);
+
 
   /* ──── Interpolación final (solo History) ──── */
   useEffect(() => {
@@ -288,6 +303,36 @@ const p    = { ...safePoint, distance: safePoint.traveled_distance * 3.28084 };
   /* loadingHistory = true mientras esperamos el primer lote */
 const loadingHistory =
   mode === 'history' && history.length === 0;
+/* --- Re-calcula grids en modo realTime --- */
+useEffect(() => {
+  if (mode !== 'realTime' || !history.length) return;
+
+  // 1. parte ya recorrida de la vuelta
+  const temp = {};
+  const hum  = {};
+  const bed  = {};
+
+  for (const p of history) {
+    const key = `${p.x}-${p.y}`;
+
+    temp[key] = {
+      sum:   (temp[key]?.sum ?? 0) + p.tempF,
+      count: (temp[key]?.count ?? 0) + 1
+    };
+    hum[key] = {
+      sum:   (hum[key]?.sum ?? 0) + p.hum,
+      count: (hum[key]?.count ?? 0) + 1
+    };
+    bed[key] = {
+      sum:   (bed[key]?.sum ?? 0) + p.bedF,
+      count: (bed[key]?.count ?? 0) + 1
+    };
+  }
+
+  setTempGrid(temp);
+  setHumGrid(hum);
+  setBedGrid(bed);
+}, [mode, history]);
 
   return (
     <div className="dashboard-wrapper">
