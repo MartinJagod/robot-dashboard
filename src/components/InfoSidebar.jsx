@@ -14,7 +14,6 @@ const Card = ({ label, value, icon }) => (
 );
 
 export default function InfoSidebar({ temp, hum, bedTemp, step, distance }) {
-console.log('[DEBUG] punto actual', distance);
   /* lecturas en vivo */
   const tempNow    = `${temp?.toFixed(1)} °F`;
   const humNow     = `${hum?.toFixed(1)} %`;

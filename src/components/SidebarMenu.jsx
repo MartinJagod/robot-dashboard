@@ -1,5 +1,5 @@
 // SidebarMenu.jsx
-import  { memo } from 'react';
+import { memo } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCircleUser,
@@ -20,7 +20,7 @@ const SidebarMenu = memo(
     laps
   }) => (
     <aside className={`sidebar ${open ? 'open' : ''}`}>
-      {/* HEADER ------------------------------------------------------- */}
+      {/* ---------- HEADER ---------- */}
       <header className="sidebar-header">
         <div className="avatar">
           <FontAwesomeIcon icon={faCircleUser} size="lg" color="#fff" />
@@ -34,12 +34,10 @@ const SidebarMenu = memo(
           <p>Mildmay, Canada.</p>
         </div>
 
-        <button className="close-btn" onClick={onClose}>
-          ×
-        </button>
+        <button className="close-btn" onClick={onClose}>×</button>
       </header>
 
-      {/* HISTORY MODE ------------------------------------------------- */}
+      {/* ---------- HISTORY MODE ---------- */}
       <section className="history-card">
         <header className="history-card__header">
           <span>History Mode</span>
@@ -52,9 +50,8 @@ const SidebarMenu = memo(
           <input
             type="date"
             value={selectedDate}
-            onChange={e => {
+            onChange={(e) => {
               onDateChange(e.target.value);
-              setMode('history');
             }}
           />
         </label>
@@ -66,13 +63,13 @@ const SidebarMenu = memo(
             <select
               value={selectedLap}
               disabled={laps.length === 0}
-              onChange={e => onLapChange(Number(e.target.value))}
+              onChange={e => onLapChange(e.target.value)}   // ← devolvé string
             >
               <option value="">
-                {laps.length === 0 ? 'No laps available' : 'Select lap…'}
+                {laps.length === 0 ? 'No laps available' : 'Seleccioná una vuelta…'}
               </option>
               {laps.map(lap => (
-                <option key={lap.value} value={lap.value}>
+                <option key={lap.value} value={String(lap.value)}>
                   {lap.label}
                 </option>
               ))}
@@ -82,26 +79,21 @@ const SidebarMenu = memo(
         </label>
       </section>
 
-      {/* REAL-TIME MODE ---------------------------------------------- */}
+      {/* ---------- REAL-TIME MODE ---------- */}
       <section className="realtime-card">
-  <button
-    type="button"
-    className="realtime-btn"
-   onClick={() => {
-     /* 1️⃣ pone la fecha de hoy en el DatePicker */
-     const todayISO = new Date().toISOString().slice(0, 10);
-     onDateChange(todayISO);      // <- viene del padre
-
-     /* 2️⃣ (opcional) limpiá la lap seleccionada */
-     onLapChange('');             // o setSelectedLap('') en el padre
-
-     /* 3️⃣ activa el modo Real-time */
-     setMode('realTime');
-   }}
-  >
-    Real time Mode
-  </button>
-</section>
+        <button
+          type="button"
+          className="realtime-btn"
+          onClick={() => {
+            const todayISO = new Date().toISOString().slice(0, 10);
+            onDateChange(todayISO);      // 1️⃣ poné la fecha de hoy
+            onLapChange('');             // 2️⃣ limpiá la vuelta
+            setMode('realTime');         // 3️⃣ activá Real-time
+          }}
+        >
+          Real time Mode
+        </button>
+      </section>
     </aside>
   )
 );

@@ -4,10 +4,10 @@ import { getLiveStatus, getLapHistory } from '../services/robotService';
 
 /* Medidas de la grilla (80 × 8) */
 const COLUMNS = 80;
-const ROWS    = 8;
+const ROWS = 8;
 
 /* Helpers -------------------------------------------------------------- */
-const toF     = c => c * 9 / 5 + 32;
+const toF = c => c * 9 / 5 + 32;
 const pct2idx = (pct, size) => Math.min(Math.floor(pct * size), size - 1);
 
 /* Transforma un punto del backend y calcula orientación ---------------- */
@@ -15,19 +15,26 @@ const transform = (raw, prev = null) => {
   const x = pct2idx(+raw.view_x, COLUMNS);
   const y = pct2idx(+raw.view_y, ROWS);
 
-  let orientation = +raw.orientation || 0;
+   let orientation;
 
   if (prev) {
     const dx = x - prev.x;
     const dy = y - prev.y;
 
-    if (Math.abs(dx) > Math.abs(dy)) {
-      orientation = dx > 0 ? 90 : -90;          // derecha | izquierda
-    } else if (dy !== 0) {
-      orientation = dy > 0 ? 180 : 0;           // abajo | arriba
+    if (dx === 0 && dy === 0) {
+      // Sin movimiento → mantiene la orientación previa
+      orientation = prev.orientation;
+    } else if (Math.abs(dx) >= Math.abs(dy)) {
+      orientation = dx > 0 ?  90 : -90;  // derecha | izquierda
+    } else {
+      orientation = dy > 0 ?   0 : 180;  // abajo   | arriba
     }
+  } else {
+    // Primer punto → fija una orientación neutra (ej. 0)
+    orientation = 0;
   }
 
+console.log('transform ', raw, x, y, orientation);
   return {
     datetime: raw.datetime,
     start_time: raw.start_time,
@@ -36,8 +43,8 @@ const transform = (raw, prev = null) => {
     y,
     orientation,
     tempF: toF(+raw.room_temp),
-    hum:   +raw.room_humidity,
-    bedF:  toF(+raw.bed_temp),
+    hum: +raw.room_humidity,
+    bedF: toF(+raw.bed_temp),
     traveled_distance: +raw.traveled_distance || 0      // en metros
   };
 };
@@ -65,56 +72,73 @@ const applyTransform = rawList => {
 export default function useRobotData({
   name,
   date,
-  mode            = 'history',
-  lapRequested    = 1,
-  pollInterval    = 9000
+  mode = 'history',
+  lapRequested,
+  pollInterval = 9000
 }) {
   const [history, setHistory] = useState([]);
-  const [live,    setLive]    = useState(null);
-  const [lap,     setLap]     = useState(lapRequested);
+  const [live, setLive] = useState(null);
+  const [lap, setLap] = useState(lapRequested ?? 0);
 
-  /* ------------------- carga inicial (History + Real-time) ----------- */
-  useEffect(() => {
-   // 🆕 resetea la vuelta actual para que el dashboard muestre el spinner
+/* ------------------- carga inicial (History + Real-time) ----------- */
+useEffect(() => {
   setHistory([]);
-    let active = true;
+  let active = true;
 
-    (async () => {
-      let livePoint = null;
+  /* 0️⃣  En history, si aún no hay vuelta elegida → no hacemos nada */
+  if (mode === 'history' && (lapRequested == null || lapRequested < 0)) {
+    return () => { active = false; };   // solo cleanup
+  }
 
-      /* 1. Estado en vivo para saber qué vuelta corre */
+  /* Función asíncrona auto-ejecutable */
+  (async () => {
+    let livePoint = null;
+
+    /* 1. Estado en vivo SOLO en realTime */
+    if (mode === 'realTime') {
       try {
-        const rawLive = await getLiveStatus(name);
-        livePoint = transform(rawLive);
+        const rawLive   = await getLiveStatus(name);
+        livePoint       = transform(rawLive);
         if (!active) return;
         setLive(livePoint);
         setLap(livePoint.lap);
       } catch {
         /* robot apagado o sin señal */
       }
+    }
 
-      /* 2. Determinar cuál vuelta cargar inicialmente */
-      const lapToLoad =
-        mode === 'realTime' && livePoint ? livePoint.lap : lapRequested;
-      const prevLapNum = lapToLoad > 1 ? lapToLoad - 1 : null;
+    /* 2. Determinar qué vuelta cargar */
+    const lapToLoad =
+      mode === 'realTime' && livePoint
+        ? livePoint.lap
+        : (lapRequested != null && lapRequested >= 0 ? lapRequested : null);
 
-      try {
-        const prevLapRaw = prevLapNum
-          ? await getLapHistory({ name, date, lap: prevLapNum })
-          : [];
-        const currLapRaw = await getLapHistory({ name, date, lap: lapToLoad });
+    if (lapToLoad == null) {
+      setHistory([]);
+      return;
+    }
 
-        const prevLap = applyTransform(prevLapRaw);
-        const currLap = applyTransform(currLapRaw);
+    const prevLapNum = lapToLoad > 1 ? lapToLoad - 1 : null;
 
-        if (active) setHistory([...prevLap, ...currLap]);
-      } catch (e) {
-        console.error('useRobotData init', e);
-      }
-    })();
+    try {
+      const prevLapRaw = prevLapNum
+        ? await getLapHistory({ name, date, lap: prevLapNum })
+        : [];
+      const currLapRaw = await getLapHistory({ name, date, lap: lapToLoad });
 
-    return () => { active = false; };
-  }, [name, date, lapRequested, mode]);
+      const prevLap = applyTransform(prevLapRaw);
+      const currLap = applyTransform(currLapRaw);
+
+      if (active) setHistory([...prevLap, ...currLap]);
+    } catch (e) {
+      console.error('useRobotData init', e);
+    }
+  })();
+
+  return () => { active = false; };
+}, [name, date, lapRequested, mode]);
+
+
 
   /* ------------------- polling en vivo (solo en Real-time) ----------- */
   useEffect(() => {
@@ -122,7 +146,7 @@ export default function useRobotData({
 
     const id = setInterval(async () => {
       try {
-        const rawLive   = await getLiveStatus(name);
+        const rawLive = await getLiveStatus(name);
         const livePoint = transform(rawLive);
         setLive(livePoint);
 
