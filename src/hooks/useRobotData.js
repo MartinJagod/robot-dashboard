@@ -129,7 +129,7 @@ useEffect(() => {
       const prevLap = applyTransform(prevLapRaw);
       const currLap = applyTransform(currLapRaw);
 
-      if (active) setHistory([...prevLap, ...currLap]);
+      if (active) setHistory(currLap);  //([...prevLap, ...currLap]);
     } catch (e) {
       console.error('useRobotData init', e);
     }
