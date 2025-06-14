@@ -158,4 +158,81 @@
     background-color: white;
 
   }
-  
+ /* ---------- Robot dropdown ---------- */
+.robot-select { 
+  position: relative; 
+  font-size: 0.65rem; 
+background: #e67e22;
+border-radius: 0.7rem;
+color: #ffffff;
+min-width: 180px;
+display: flex;
+flex-direction: row;
+justify-content: center;
+}
+
+.robot-select__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: #e67e22;          /* naranja botones sidebar */
+  color: #fff;
+  border: 0;
+  border-radius: 0.7rem;
+  padding: 5px;
+   font-weight: 600;
+  cursor: pointer;
+  min-width: 120px;
+}
+
+.robot-select__btn .chevron {
+  position: absolute;
+  right: 14px;
+  width: 8px; height: 8px;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(45deg);
+  transition: transform .2s;
+}
+
+.robot-select__btn .chevron.up { transform: rotate(-135deg); }
+
+/* panel */
+.robot-select__menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: #e67e22;
+  border-radius: 0 0 14px 14px;
+  padding: 12px 0;
+  z-index: 1000;
+}
+
+.robot-select__item {
+  font-style: italic;
+  background: #ffefdf;
+  margin: 4px 12px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background .15s;
+}
+
+.robot-select__item:hover      { background: #ffe4c5; }
+.robot-select__item.active     { background: #ffd8a8; font-weight: 600; }
+
+.select-robot-wrapper select{
+  width:100%;
+  appearance:none;                   /* quita el arrow nativo */
+  background:#f6cbad;
+  border:1px solid #ffffff;
+  border-radius:6px;
+  padding:0.4rem;  /* deja espacio al icono */
+  font-size:0.65rem;
+  color:#444;
+  outline:none;
+  margin-top: 14px;
+  margin-left: 5px;
+  text-align: center;
+}

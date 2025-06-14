@@ -22,7 +22,16 @@ const BASE_ORIENTATION = 0;
 const TARGET_MS = 4000;
 const MIN_STEP = 30;          // no bajes de ~30 ms para no saturar el main thread
 /* ───────── NAVBAR completo ───────── */
-
+const ROBOTS = [
+  'Flocker001',
+  'Flocker002',
+  'Flocker003',
+  'Flocker004',
+  'Flocker005',
+  'Flocker006',
+  'Flocker007',
+  'Flocker008',
+];
 const Navbar = memo(
   ({
     lap,
@@ -34,47 +43,85 @@ const Navbar = memo(
     placingDate,
     breedingDays,
     ambientTemp = '--°F',
-    direction = '--'
-  }) => (
-    <div className="navbar">
-      <div className="center-section">
-        <img
-          src="/Logos/aviRobotsLogo.png"
-          alt="Avi Robots"
-          className="h-12 object-contain logo-img"
-        />
-        <div className="center-item">
-          <span>Ambient T°</span>
-          <span>{ambientTemp}</span>
-        </div>
-        <div className="center-item">
-          <span>Direction</span>
-          <span>{direction}</span>
-        </div>
-      </div>
+    direction = '--',
+    selectedRobot,
+    onRobotChange,
+  }) => {
+    // ➋ Robot seleccionado (se usará luego en useRobot)
 
-      <div className="lap-navigation center-section">
-        <ChevronLeft onClick={onPrev} style={{ cursor: 'pointer' }} />
-        <div className="lap-number">
-          <span>Lap {String(lap).padStart(2, '0')}</span><br />
-          <small className="spanFromTo">From: {from}</small><br />
-          <small className="spanFromTo">To: {to}</small>
+
+    return (
+      <div className="navbar">
+        {/* ─────── Bloque central ─────── */}
+        <div className="center-section">
+          <img
+            src="/Logos/aviRobotsLogo.png"
+            alt="Avi Robots"
+            className="h-12 object-contain logo-img"
+          />
+
+          <div className="center-item">
+            <span>Ambient T°</span>
+            <span>{ambientTemp}</span>
+          </div>
+
+          <div className="center-item">
+            <span>Direction</span>
+            <span>{direction}</span>
+          </div>
+
+          {/* ─────── NUEVO SELECT ─────── */}
+
+          <div className="center-item robot-select">
+              <span>Select Robot:</span>
+            <label className="history-card__field">
+              <div className="select-robot-wrapper">
+                <select
+                  id="robot-select"
+                  value={selectedRobot}
+                  onChange={e => onRobotChange(e.target.value)}
+                  className="robot-dropdown"
+                >
+                  <option value="">
+                    {ROBOTS.length === 0 ? 'No robot available' : 'Select robot…'}
+                  </option>
+                 {ROBOTS.map(name => (
+  <option key={name} value={name}>
+    {name}            {/* ← aquí estaba faltando */}
+  </option>
+))}
+                </select>
+              </div>
+            </label>
+          </div>
+      
         </div>
-        <ChevronRight onClick={onNext} style={{ cursor: 'pointer' }} />
-      </div>
 
-      <div className="farm-info-box center-section">
-        <div><span>Farm: </span><span>A</span></div>
-        <div><span>Barn id: </span><span>03</span></div>
-        <div><span>Date: </span><span>{historyDate}</span></div>
-      </div>
+        {/* ─────── Navegación de laps ─────── */}
+        <div className="lap-navigation center-section">
+          <ChevronLeft onClick={onPrev} style={{ cursor: 'pointer' }} />
+          <div className="lap-number">
+            <span>Lap {String(lap).padStart(2, '0')}</span><br />
+            <small className="spanFromTo">From: {from}</small><br />
+            <small className="spanFromTo">To:&nbsp;&nbsp;&nbsp;{to}</small>
+          </div>
+          <ChevronRight onClick={onNext} style={{ cursor: 'pointer' }} />
+        </div>
 
-      <div className="farm-info-box3">
-        <div><strong>Placing date: </strong><span>{placingDate}</span></div>
-        <div><strong>Breeding days: </strong><span>{breedingDays}</span></div>
+        {/* ─────── Datos de granja ─────── */}
+        <div className="farm-info-box center-section">
+          <div><span>Farm:&nbsp;</span><span>A</span></div>
+          <div><span>Barn id:&nbsp;</span><span>03</span></div>
+          <div><span>Date:&nbsp;</span><span>{historyDate}</span></div>
+        </div>
+
+        <div className="farm-info-box3">
+          <div><strong>Placing date:&nbsp;</strong><span>{placingDate}</span></div>
+          <div><strong>Breeding days:&nbsp;</strong><span>{breedingDays}</span></div>
+        </div>
       </div>
-    </div>
-  )
+    );
+  }
 );
 
 /* ───────── SECTION ───────── */
@@ -153,7 +200,7 @@ export default function HeatmapDashboard() {
   const [toTime, setToTime] = useState('--');
   const [loadingInterpolation, setLoadingInterpolation] = useState(false);
   const [lapFinished, setLapFinished] = useState(false);
-
+ const [selectedRobot, setSelectedRobot] = useState('');
 
   /* Sidebar / modo */
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -163,7 +210,7 @@ export default function HeatmapDashboard() {
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().slice(0, 10)
   );
-
+const { data, loading, error } = useRobotData(selectedRobot);
   /* ──── API laps cuando cambia la fecha ──── */
   /*   useEffect(() => {
       if (!selectedDate) { setLaps([]); return; }
@@ -223,7 +270,7 @@ export default function HeatmapDashboard() {
   const enabled = lapRequested !== null;
 
   const { history, live, lap } = useRobotData({
-    name: 'Flocker004',
+    name: selectedRobot  ?? 'Flocker004',  // ← nombre del robot
     date: selectedDate,
     mode,
     lapRequested: enabled ? lapRequested : undefined,
@@ -421,6 +468,8 @@ export default function HeatmapDashboard() {
         historyDate={selectedDate}
         placingDate={placingDateView}
         breedingDays={breedingDays}
+        selectedRobot={selectedRobot}
+        onRobotChange={setSelectedRobot}
       />
 
       {/* Botón & Sidebar */}
@@ -448,8 +497,8 @@ export default function HeatmapDashboard() {
             robotPosition={{ x: safePoint.x, y: safePoint.y }}
             robotOrientation={safePoint.orientation} />
           <Section data={humGrid} type="humidity" title="Ambient humidity"
-            robotPosition={{ x: safePoint.x, y: safePoint.y }} 
-            robotOrientation={safePoint.orientation}/>
+            robotPosition={{ x: safePoint.x, y: safePoint.y }}
+            robotOrientation={safePoint.orientation} />
           <Section data={bedGrid} type="temperature" title="Litter Temperature"
             robotPosition={{ x: safePoint.x, y: safePoint.y }}
             robotOrientation={safePoint.orientation} />
