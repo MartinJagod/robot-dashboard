@@ -243,9 +243,11 @@ const handleDownload = async () => {
       unit: 'px',
       format: [canvas.width, canvas.height],
     });
-
     pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-    pdf.save(`heatmap_${Date.now()}.pdf`);
+  if(!selectedRobot){setSelectedRobot('Flocker004');}
+
+    pdf.save(`Avirobots_${selectedRobot}_${Date.now()}.pdf`);
+  
   } catch (err) {
     console.error('Error al generar PDF:', err);
   }
