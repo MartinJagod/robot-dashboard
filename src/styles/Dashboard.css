@@ -47,13 +47,41 @@
   top: 9rem;
   left: 0;
   background: transparent;
-  color: #e86f1a;
+  color: black;
   border: none;
   font-size: 1.5rem;
   z-index: 1;
   cursor: pointer;
 }
+/* donde tengas tus estilos */
+.hamburger-icon {
+  font-size: 1.1rem;          /* opcional: tamaño del icono */
+}
 
+.hamburger-label {
+  margin-left: 40px;           /* ← controla aquí el espacio deseado */
+font-size: 1.1rem;
+}
+/* Punto rojo a la derecha de “Real Time” */
+.status-dot {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  margin-left: 6px;
+  margin-bottom: 3px;              /* espacio entre texto y punto */
+  background: #ff3b30;           /* rojo iOS / puedes usar #ff0000 */
+  border-radius: 50%;
+}
+
+/* — Opcional — efecto pulso para destacar */
+@keyframes pulse {
+  0%   { transform: scale(1);   opacity: 1; }
+  50%  { transform: scale(1.6); opacity: 0.6; }
+  100% { transform: scale(1);   opacity: 1; }
+}
+.status-dot {
+  animation: pulse 1.6s infinite ease-in-out;
+}
 .sidebar{
   position: fixed;
   left: -320px;
@@ -253,23 +281,26 @@
   }
   
   .info-sidebar {
+    margin-left: -3px;
     flex: 0 0 15%;          /* 20 % del ancho */
     display: flex;
     flex-direction: column;
-    gap: 7px;
+    gap: 11px;
   }
   
   
   .info-card {
-    display: flex;
+    display: flex
+;
     flex-direction: column;
     justify-content: center;
-    gap: 4px;
-    padding: 12px;
+    gap: 5px;
+    /* padding: 12px; */
     border-radius: 8px;
     background: #ffffff;
-    box-shadow: 0 1px 4px rgba(0,0,0,.12);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .12);
     text-align: center;
     font-family: 'Inter', sans-serif;
-  }
+    width: 50%;
+}
   

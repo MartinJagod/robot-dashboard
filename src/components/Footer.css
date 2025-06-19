@@ -1,0 +1,51 @@
+/* src/components/Footer.css */
+.footer-bar {
+    position: fixed;
+    left: 0;
+    top: 95%;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #e5ebef;
+    border-top: 1px solid #cfd5da;
+    height: 44px;
+    padding: 0 14px;
+    z-index: 30;
+    width: 99%;
+}
+
+.footer-left,
+.footer-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.footer-logo {
+  height: 22px;
+  opacity: 0.55;
+  flex-shrink: 0;
+}
+
+.footer-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  flex-shrink: 0;
+}
+
+.footer-btn:hover,
+.footer-btn:focus-visible {
+  opacity: 1;
+}
+@media print {
+  body > * { display: none !important; }
+  #dashboard-capture { display: block !important; }
+}

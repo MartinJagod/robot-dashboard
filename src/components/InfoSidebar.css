@@ -4,8 +4,8 @@
        pero incluimos aquí la disposición interna y cualquier ajuste de color de fondo */
     display: flex;
     flex-direction: column;
-    gap: 5px;
-    align-items: start;
+    gap: 15px;
+    align-items: center;
     margin-left: 1%;
    
 
@@ -27,15 +27,22 @@
   }
   
   .info-label  { font-size: 0.6rem; color: #555; text-transform: uppercase; }
-  .info-value  { font-size: 1.5rem; font-weight: 800; }
-  .info-icon   {  margin: 0 auto; font-size: 0.9rem; justify-self: center; }
+  .info-value  { font-size: 01.8rem; font-weight: 800; }
+  .info-icon   {  font-size: 1.1rem; justify-self: baseline; color: #fff; display: inline-flex; align-items: center; padding-right: 5px;}
   
   /* Colores por tarjeta (opcional) */
-  .info-card:nth-child(3) .info-value,
-  .info-card:nth-child(4) .info-value,
+  .info-card:nth-child(2) .info-value { color:#030303; font-size: 1.9rem; }
+  .info-card:nth-child(4) .info-value { color:#030303; font-size: 1.9rem; }
   .info-card:nth-child(5) .info-value { color:#ff8c00; font-size: 0.9rem; } /* tiempos */
-  .info-card:nth-child(6) .info-value { color:#e63946; font-size: 0.8rem; }  /* distancia */
-  .info-card:nth-child(7) .info-value { color:#e63946; font-size: 0.7rem; }  /* distancia */
+  .info-card:nth-child(6) .info-value { color:#030303; font-size: 0.8rem; }  /* distancia */
+  .info-card:nth-child(7) .info-value { color:#030303; font-size: 0.9rem; }  /* distancia */
+  .info-card:nth-child(8) .info-value { color:#030303; font-size: 0.9rem; }  /* distancia */
+  .info-card:nth-child(9) .info-value { color:#030303; font-size: 0.9rem; }  /* distancia */
+  .info-card:nth-child(10) .info-value { color:#030303; font-size: 0.9rem; }  /* distancia */
+  .info-card:nth-child(12) .info-value { color: #fff; font-size: 0.9rem; display: inline-flex;align-items: center; margin: 0 auto; }  /* distancia */
+  .info-card:nth-child(12)  { background-color: #ff8c00; }  /* distancia */
 
-  
+  .info-card:nth-child(13) .info-value { color:#e63946; font-size: 0.9rem; }  /* distancia */
+  .info-card:nth-child(14) .info-value { color:#fff; font-size: 0.9rem;display: inline-flex;align-items: center; margin: 0 auto; }  /* distancia */ 
+  .info-card:nth-child(14)  { background-color: #ff8c00; }
   

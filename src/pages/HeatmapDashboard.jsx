@@ -9,7 +9,9 @@ import SidebarMenu from '../components/SidebarMenu';
 import useRobotData from '../hooks/useRobotData';
 import '../styles/Dashboard.css';
 import '../styles/Navbar.css';
-
+import Footer from '../components/Footer';
+import html2canvas from 'html2canvas';   // si vas a capturar pantalla (opcional)
+import { jsPDF } from 'jspdf';
 
 
 /* ───── grilla 80 × 8 ───── */
@@ -220,7 +222,69 @@ const { data, loading, error } = useRobotData(selectedRobot);
         .then(data => setLaps(Array.isArray(data) ? data : []))
         .catch(() => setLaps([]));
     }, [selectedDate]); */
+    
+/* -------------- helper reutilizable -------------- */
+const captureCanvas = async () => {
+  const el = document.getElementById('dashboard-capture');
+  if (!el) throw new Error('No se encontró el contenedor para capturar');
 
+  // ↑↑ scale 2 → imagen + nítida
+  return html2canvas(el, { scale: 2, useCORS: true });
+};
+
+/* -------------- ↓↓↓ handlers del Footer ↓↓↓ -------------- */
+const handleDownload = async () => {
+  try {
+    const canvas  = await captureCanvas();
+    const imgData = canvas.toDataURL('image/png');
+
+    const pdf = new jsPDF({
+      orientation: canvas.width > canvas.height ? 'l' : 'p',
+      unit: 'px',
+      format: [canvas.width, canvas.height],
+    });
+
+    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+    pdf.save(`heatmap_${Date.now()}.pdf`);
+  } catch (err) {
+    console.error('Error al generar PDF:', err);
+  }
+};
+const handlePrint = async () => {
+  try {
+    const canvas  = await captureCanvas();
+    const imgData = canvas.toDataURL('image/png', 1.0);
+
+    const w = window.open('', '_blank');
+    w.document.write(`
+      <html>
+        <head><title>Print</title>
+          <style>html,body{margin:0;padding:0}</style>
+        </head>
+        <body>
+          <img id="capture" src="${imgData}" style="width:100%;max-width:none"/>
+        </body>
+      </html>
+    `);
+    w.document.close();
+
+    // Esperamos a que la IMG realmente cargue
+    w.document.getElementById('capture').onload = () => {
+      w.focus();
+      w.print();
+      w.close();
+    };
+  } catch (err) {
+    console.error('Error al imprimir:', err);
+  }
+};
+
+const toggleFullScreen = () => {
+  const el = document.documentElement;
+  document.fullscreenElement
+    ? document.exitFullscreen()
+    : el.requestFullscreen?.();
+};
   useEffect(() => {
     if (!selectedDate) return;
 
@@ -458,6 +522,8 @@ const { data, loading, error } = useRobotData(selectedRobot);
   };
 
   return (
+     <main id="dashboard-capture" /* tu grilla, leyenda, etc. */>
+
     <div className="dashboard-wrapper">
       <Navbar
         lap={lapRequested}
@@ -470,13 +536,30 @@ const { data, loading, error } = useRobotData(selectedRobot);
         breedingDays={breedingDays}
         selectedRobot={selectedRobot}
         onRobotChange={setSelectedRobot}
-      />
+        />
 
       {/* Botón & Sidebar */}
-      <button className="hamburger"
-        onClick={() => setSidebarOpen(o => !o)}
-        aria-label="Open menu">  ☰ {mode === "realTime" ? "Real Time" : "History"}</button>
+   <button
+  className="hamburger"
+  onClick={() => setSidebarOpen(o => !o)}
+  aria-label="Open menu"
+>
+  <span className="hamburger-icon">☰</span>
 
+  {mode === 'realTime' ? (
+    /* Real-Time con punto rojo */
+    <span className="hamburger-label">
+      Real Time Mode
+      <span className="status-dot" />
+    </span>
+  ) : (
+    /* History sin punto */
+    <span className="hamburger-label">
+      History Mode
+      <span className="status-dot" />
+      </span>
+  )}
+</button>
       <SidebarMenu
         open={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
@@ -487,8 +570,8 @@ const { data, loading, error } = useRobotData(selectedRobot);
         selectedLap={selectedLap}
         onLapChange={setSelectedLap}
         laps={laps}
-
-      />
+        
+        />
 
       {/* Contenido */}
       <div className="dashboard-content">
@@ -511,9 +594,14 @@ const { data, loading, error } = useRobotData(selectedRobot);
           step={idx + 1}
           lap={lapRequested}
           distance={safePoint.traveled_distance * 3.28084}
-        />
+          />
       </div>
-
+     <Footer
+        onSettingsClick={() => setSidebarOpen(o => !o)}
+        onDownload={handleDownload}
+        onPrint={handlePrint}
+        onFullScreen={toggleFullScreen}
+        />
       {(loadingHistory || loadingInterpolation) && (
         <div className="spinner-overlay">
           <div className="spinner"></div>
@@ -522,5 +610,6 @@ const { data, loading, error } = useRobotData(selectedRobot);
       )}
 
     </div>
+      </main>
   );
 }

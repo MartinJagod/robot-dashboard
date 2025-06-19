@@ -4,19 +4,21 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPersonWalking, faStopwatch } from '@fortawesome/free-solid-svg-icons';
 import './InfoSidebar.css'; // Importa el CSS para el sidebar
 const Card = ({ label, value, icon }) => (
-  <div className="info-card">
+  <>
     <span className="info-label">{label}</span>
-      {icon && <FontAwesomeIcon icon={icon} className="info-icon" />}
-    <span className="info-value">
-      {value}
-    </span>
-  </div>
+    <div className="info-card">
+      
+      <span className="info-value">
+       {icon && <FontAwesomeIcon icon={icon} className="info-icon" />} {value}
+      </span>
+    </div>
+  </>
 );
 
 export default function InfoSidebar({ temp, hum, bedTemp, step, distance }) {
   /* lecturas en vivo */
-  const tempNow    = `${temp?.toFixed(1)} °F`;
-  const humNow     = `${hum?.toFixed(1)} %`;
+  const tempNow = `${temp?.toFixed(1)} °F`;
+  const humNow = `${hum?.toFixed(1)} %`;
   const bedTempNow = `${bedTemp?.toFixed(1)} °F`;
   const distanceNow = `${distance?.toFixed(1)} ft`; // ✅
 
@@ -25,7 +27,7 @@ export default function InfoSidebar({ temp, hum, bedTemp, step, distance }) {
   const workingSince = '09:51 am'; /* Aca va start date */
 
   /* 2 · Time working   => inicia 1 : 21 : 02 y suma 9 s por step */
-  const baseWorking =  9 * 60 + 2;                // 4 862 s
+  const baseWorking = 9 * 60 + 2;                // 4 862 s
   const timeWorkingSec = baseWorking + step * 9;
   const timeWorking =
     new Date(timeWorkingSec * 1000).toISOString().substr(11, 8).replace(/:/g, ' : ');
@@ -40,14 +42,14 @@ export default function InfoSidebar({ temp, hum, bedTemp, step, distance }) {
 
   return (
     <aside className="info-sidebar">
-      <Card label="Ambient T°"  value={tempNow}   />
-      <Card label="Humidity"    value={humNow}    />
-      <Card label="Bed T°"      value={bedTempNow}/>
+      <Card label="Ambient T°" value={tempNow} />
+      <Card label="Humidity" value={humNow} />
+      <Card label="Bed T°" value={bedTempNow} />
 
       <Card label="Working since" value={workingSince} />
-      <Card label="Time working"  value={timeWorking}   />
-      <Card label="Remaining"     value={remaining}     icon={faStopwatch} />
-      <Card label="Distance made" value={distanceNow}      icon={faPersonWalking} />
+      <Card label="Time working" value={timeWorking} />
+      <Card label="Remaining" value={remaining} icon={faStopwatch} />
+      <Card label="Distance made" value={distanceNow} icon={faPersonWalking} />
     </aside>
   );
 }
