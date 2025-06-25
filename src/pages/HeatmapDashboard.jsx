@@ -75,7 +75,7 @@ const Navbar = memo(
           {/* ─────── NUEVO SELECT ─────── */}
 
           <div className="center-item robot-select">
-              <span>Select Robot:</span>
+            <span>Select Robot:</span>
             <label className="history-card__field">
               <div className="select-robot-wrapper">
                 <select
@@ -87,16 +87,16 @@ const Navbar = memo(
                   <option value="">
                     {ROBOTS.length === 0 ? 'No robot available' : 'Select robot…'}
                   </option>
-                 {ROBOTS.map(name => (
-  <option key={name} value={name}>
-    {name}            {/* ← aquí estaba faltando */}
-  </option>
-))}
+                  {ROBOTS.map(name => (
+                    <option key={name} value={name}>
+                      {name}            {/* ← aquí estaba faltando */}
+                    </option>
+                  ))}
                 </select>
               </div>
             </label>
           </div>
-      
+
         </div>
 
         {/* ─────── Navegación de laps ─────── */}
@@ -202,7 +202,7 @@ export default function HeatmapDashboard() {
   const [toTime, setToTime] = useState('--');
   const [loadingInterpolation, setLoadingInterpolation] = useState(false);
   const [lapFinished, setLapFinished] = useState(false);
- const [selectedRobot, setSelectedRobot] = useState('');
+  const [selectedRobot, setSelectedRobot] = useState('');
 
   /* Sidebar / modo */
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -212,7 +212,7 @@ export default function HeatmapDashboard() {
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().slice(0, 10)
   );
-const { data, loading, error } = useRobotData(selectedRobot);
+  /* const { data, loading, error } = useRobotData(selectedRobot); */
   /* ──── API laps cuando cambia la fecha ──── */
   /*   useEffect(() => {
       if (!selectedDate) { setLaps([]); return; }
@@ -222,43 +222,43 @@ const { data, loading, error } = useRobotData(selectedRobot);
         .then(data => setLaps(Array.isArray(data) ? data : []))
         .catch(() => setLaps([]));
     }, [selectedDate]); */
-    
-/* -------------- helper reutilizable -------------- */
-const captureCanvas = async () => {
-  const el = document.getElementById('dashboard-capture');
-  if (!el) throw new Error('No se encontró el contenedor para capturar');
 
-  // ↑↑ scale 2 → imagen + nítida
-  return html2canvas(el, { scale: 2, useCORS: true });
-};
+  /* -------------- helper reutilizable -------------- */
+  const captureCanvas = async () => {
+    const el = document.getElementById('dashboard-capture');
+    if (!el) throw new Error('No se encontró el contenedor para capturar');
 
-/* -------------- ↓↓↓ handlers del Footer ↓↓↓ -------------- */
-const handleDownload = async () => {
-  try {
-    const canvas  = await captureCanvas();
-    const imgData = canvas.toDataURL('image/png');
+    // ↑↑ scale 2 → imagen + nítida
+    return html2canvas(el, { scale: 2, useCORS: true });
+  };
 
-    const pdf = new jsPDF({
-      orientation: canvas.width > canvas.height ? 'l' : 'p',
-      unit: 'px',
-      format: [canvas.width, canvas.height],
-    });
-    pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-  if(!selectedRobot){setSelectedRobot('Flocker004');}
+  /* -------------- ↓↓↓ handlers del Footer ↓↓↓ -------------- */
+  const handleDownload = async () => {
+    try {
+      const canvas = await captureCanvas();
+      const imgData = canvas.toDataURL('image/png');
 
-    pdf.save(`Avirobots_${selectedRobot}_${Date.now()}.pdf`);
-  
-  } catch (err) {
-    console.error('Error al generar PDF:', err);
-  }
-};
-const handlePrint = async () => {
-  try {
-    const canvas  = await captureCanvas();
-    const imgData = canvas.toDataURL('image/png', 1.0);
+      const pdf = new jsPDF({
+        orientation: canvas.width > canvas.height ? 'l' : 'p',
+        unit: 'px',
+        format: [canvas.width, canvas.height],
+      });
+      pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+      if (!selectedRobot) { setSelectedRobot('Flocker004'); }
 
-    const w = window.open('', '_blank');
-    w.document.write(`
+      pdf.save(`Avirobots_${selectedRobot}_${Date.now()}.pdf`);
+
+    } catch (err) {
+      console.error('Error al generar PDF:', err);
+    }
+  };
+  const handlePrint = async () => {
+    try {
+      const canvas = await captureCanvas();
+      const imgData = canvas.toDataURL('image/png', 1.0);
+
+      const w = window.open('', '_blank');
+      w.document.write(`
       <html>
         <head><title>Print</title>
           <style>html,body{margin:0;padding:0}</style>
@@ -268,31 +268,32 @@ const handlePrint = async () => {
         </body>
       </html>
     `);
-    w.document.close();
+      w.document.close();
 
-    // Esperamos a que la IMG realmente cargue
-    w.document.getElementById('capture').onload = () => {
-      w.focus();
-      w.print();
-      w.close();
-    };
-  } catch (err) {
-    console.error('Error al imprimir:', err);
-  }
-};
+      // Esperamos a que la IMG realmente cargue
+      w.document.getElementById('capture').onload = () => {
+        w.focus();
+        w.print();
+        w.close();
+      };
+    } catch (err) {
+      console.error('Error al imprimir:', err);
+    }
+  };
 
-const toggleFullScreen = () => {
-  const el = document.documentElement;
-  document.fullscreenElement
-    ? document.exitFullscreen()
-    : el.requestFullscreen?.();
-};
+  const toggleFullScreen = () => {
+    const el = document.documentElement;
+    document.fullscreenElement
+      ? document.exitFullscreen()
+      : el.requestFullscreen?.();
+  };
   useEffect(() => {
     if (!selectedDate) return;
 
     (async () => {
       try {
-        const url = `/api/robot_lap_summary?name=Flocker004&date=${selectedDate}`;
+        const robot = selectedRobot || 'Flocker004';   // fallback si aún no eligieron
+        const url = `/api/robot_lap_summary?name=${robot}&date=${selectedDate}`;
         console.log('⏳ Fetching laps', url);
         const res = await fetch(url);
         if (!res.ok) throw new Error('❌ No se pudieron obtener las vueltas');
@@ -321,7 +322,7 @@ const toggleFullScreen = () => {
         setLaps([]);
       }
     })();
-  }, [selectedDate, mode]);
+  }, [selectedDate, mode, selectedRobot]);
 
   /* -- Nuevo efecto -- */
   useEffect(() => {
@@ -336,7 +337,7 @@ const toggleFullScreen = () => {
   const enabled = lapRequested !== null;
 
   const { history, live, lap } = useRobotData({
-    name: selectedRobot  ?? 'Flocker004',  // ← nombre del robot
+    name: selectedRobot ?? 'Flocker004',  // ← nombre del robot
     date: selectedDate,
     mode,
     lapRequested: enabled ? lapRequested : undefined,
@@ -524,94 +525,96 @@ const toggleFullScreen = () => {
   };
 
   return (
-     <main id="dashboard-capture" /* tu grilla, leyenda, etc. */>
+    <main id="dashboard-capture" /* tu grilla, leyenda, etc. */>
 
-    <div className="dashboard-wrapper">
-      <Navbar
-        lap={lapRequested}
-        onPrev={() => setLapRequested(l => Math.max(1, l - 1))}
-        onNext={() => setLapRequested(l => l + 1)}
-        from={fromTime}
-        to={toTime}
-        historyDate={selectedDate}
-        placingDate={placingDateView}
-        breedingDays={breedingDays}
-        selectedRobot={selectedRobot}
-        onRobotChange={setSelectedRobot}
-        />
-
-      {/* Botón & Sidebar */}
-   <button
-  className="hamburger"
-  onClick={() => setSidebarOpen(o => !o)}
-  aria-label="Open menu"
->
-  <span className="hamburger-icon">☰</span>
-
-  {mode === 'realTime' ? (
-    /* Real-Time con punto rojo */
-    <span className="hamburger-label">
-      Real Time Mode
-      <span className="status-dot" />
-    </span>
-  ) : (
-    /* History sin punto */
-    <span className="hamburger-label">
-      History Mode
-      <span className="status-dot" />
-      </span>
-  )}
-</button>
-      <SidebarMenu
-        open={sidebarOpen}
-        onClose={() => setSidebarOpen(false)}
-        mode={mode}
-        setMode={setMode}
-        selectedDate={selectedDate}
-        onDateChange={handleDateChange}
-        selectedLap={selectedLap}
-        onLapChange={setSelectedLap}
-        laps={laps}
-        
-        />
-
-      {/* Contenido */}
-      <div className="dashboard-content">
-        <div className="sections-wrapper">
-          <Section data={tempGrid} type="temperature" title="Ambient temperature"
-            robotPosition={{ x: safePoint.x, y: safePoint.y }}
-            robotOrientation={safePoint.orientation} />
-          <Section data={humGrid} type="humidity" title="Ambient humidity"
-            robotPosition={{ x: safePoint.x, y: safePoint.y }}
-            robotOrientation={safePoint.orientation} />
-          <Section data={bedGrid} type="temperature" title="Litter Temperature"
-            robotPosition={{ x: safePoint.x, y: safePoint.y }}
-            robotOrientation={safePoint.orientation} />
-        </div>
-
-        <InfoSidebar
-          temp={safePoint.tempF}
-          hum={safePoint.hum}
-          bedTemp={safePoint.bedF}
-          step={idx + 1}
+      <div className="dashboard-wrapper">
+        <Navbar
           lap={lapRequested}
-          distance={safePoint.traveled_distance * 3.28084}
-          />
-      </div>
-     <Footer
-        onSettingsClick={() => setSidebarOpen(o => !o)}
-        onDownload={handleDownload}
-        onPrint={handlePrint}
-        onFullScreen={toggleFullScreen}
+          onPrev={() => setLapRequested(l => Math.max(1, l - 1))}
+          onNext={() => setLapRequested(l => l + 1)}
+          from={fromTime}
+          to={toTime}
+          historyDate={selectedDate}
+          placingDate={placingDateView}
+          breedingDays={breedingDays}
+          selectedRobot={selectedRobot}
+          onRobotChange={setSelectedRobot}
         />
-      {(loadingHistory || loadingInterpolation) && (
-        <div className="spinner-overlay">
-          <div className="spinner"></div>
-          <p>{loadingHistory ? 'Loading history...' : 'Processing data...'}</p>
-        </div>
-      )}
 
-    </div>
-      </main>
+        {/* Botón & Sidebar */}
+        <button
+          className="hamburger"
+          onClick={() => setSidebarOpen(o => !o)}
+          aria-label="Open menu"
+        >
+          <span className="hamburger-icon">☰</span>
+
+          {mode === 'realTime' ? (
+            /* Real-Time con punto rojo */
+            <span className="hamburger-label">
+              Real Time Mode
+              <span className="status-dot" />
+            </span>
+          ) : (
+            /* History sin punto */
+            <span className="hamburger-label">
+              History Mode
+              <span className="status-dot" />
+            </span>
+          )}
+        </button>
+        <SidebarMenu
+          open={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
+          mode={mode}
+          setMode={setMode}
+          selectedDate={selectedDate}
+          onDateChange={handleDateChange}
+          selectedLap={selectedLap}
+          onLapChange={setSelectedLap}
+          laps={laps}
+          selectedRobot={selectedRobot}       // ← ahora lo recibe
+          onRobotChange={setSelectedRobot}
+
+        />
+
+        {/* Contenido */}
+        <div className="dashboard-content">
+          <div className="sections-wrapper">
+            <Section data={tempGrid} type="temperature" title="Ambient temperature"
+              robotPosition={{ x: safePoint.x, y: safePoint.y }}
+              robotOrientation={safePoint.orientation} />
+            <Section data={humGrid} type="humidity" title="Ambient humidity"
+              robotPosition={{ x: safePoint.x, y: safePoint.y }}
+              robotOrientation={safePoint.orientation} />
+            <Section data={bedGrid} type="temperature" title="Litter Temperature"
+              robotPosition={{ x: safePoint.x, y: safePoint.y }}
+              robotOrientation={safePoint.orientation} />
+          </div>
+
+          <InfoSidebar
+            temp={safePoint.tempF}
+            hum={safePoint.hum}
+            bedTemp={safePoint.bedF}
+            step={idx + 1}
+            lap={lapRequested}
+            distance={safePoint.traveled_distance * 3.28084}
+          />
+        </div>
+        <Footer
+          onSettingsClick={() => setSidebarOpen(o => !o)}
+          onDownload={handleDownload}
+          onPrint={handlePrint}
+          onFullScreen={toggleFullScreen}
+        />
+        {(loadingHistory || loadingInterpolation) && (
+          <div className="spinner-overlay">
+            <div className="spinner"></div>
+            <p>{loadingHistory ? 'Loading history...' : 'Processing data...'}</p>
+          </div>
+        )}
+
+      </div>
+    </main>
   );
 }
