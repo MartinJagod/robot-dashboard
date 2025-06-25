@@ -34,12 +34,13 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
-.house-start {
-  display: flex
-  ;
-  position: relative;
-  top: 147px;
-  left: 980px;
+.house-start{
+  position: absolute;      /*  ←  no uses relative aquí */
+  display: flex;
+  font-size: 18px;
+  color: black;
+  z-index: 10;
+  pointer-events: none;
 }
 
 .hamburger {

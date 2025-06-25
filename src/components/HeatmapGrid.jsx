@@ -46,10 +46,42 @@ export const getColorForValue = (value, type) => {
 /* ───────────────────────────────────────── HeatmapGrid ─────── */
 const cellSize = 12;
 
-const HeatmapGrid = ({ data, type, columns, rows, title }) => (
+const HeatmapGrid = ({ data, type, columns, rows, title, home }) => {
+  /* ── 1. Coordenadas de la puerta ── */
+ console.log('home', home.x, home.y);
+
+  /* ── 2. Estilo dinámico del icono ── */
+  const houseStyle = (() => {
+    if (home.x == null || home.y == null) return { display: 'none' };
+
+    /* Regla pedida: si y < 0.3 -> top fijo 147 px, left = x * 1000 */
+    if (home.y < 0.3) {
+      return {
+        position: 'absolute',
+        top: 120,
+        left: home.x * 1000,
+        transform: 'translate(-50%,0)',
+        zIndex: 12
+      };
+    }
+    if (home.y > 0.3) {
+      return {
+        position: 'absolute',
+        top: -20,
+        left: home.x * 1000,
+        transform: 'translate(-50%,0)',
+        zIndex: 12
+      };
+    }
+    /* Para otros casos lo ocultamos (ajusta a gusto) */
+    return { display: 'none' };
+  })();
+
+  /* ── 3. Render ── */
+  return (
   <div className="heatmap-wrapper " >
     
-    <FontAwesomeIcon icon={faHouse} className="house-start"/>
+    <FontAwesomeIcon icon={faHouse} className="house-start" style={houseStyle} />
     {title && <h3 className="heatmap-title">{title}</h3>}
     <div
       className="heatmap-grid"
@@ -75,6 +107,6 @@ const HeatmapGrid = ({ data, type, columns, rows, title }) => (
 
     </div>
   </div>
-);
+);};
 
 export default HeatmapGrid;

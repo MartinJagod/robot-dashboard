@@ -42,6 +42,8 @@ console.log('transform ', raw, x, y, orientation);
     x,
     y,
     orientation,
+    home_x: raw.home_x != null ? +raw.home_x : null, // ← NUEVO
+    home_y: raw.home_y != null ? +raw.home_y : null, // ← NUEVO
     tempF: toF(+raw.room_temp),
     hum: +raw.room_humidity,
     bedF: toF(+raw.bed_temp),
@@ -138,7 +140,12 @@ useEffect(() => {
   return () => { active = false; };
 }, [name, date, lapRequested, mode]);
 
-
+  /* -------- home (puerta) a partir de algún punto disponible -------- */
+  const home = live?.home_x != null
+    ? { x: live.home_x, y: live.home_y }               // RT primero
+    : history.length
+      ? { x: history[0].home_x, y: history[0].home_y } // History
+      : { x: null, y: null };       
 
   /* ------------------- polling en vivo (solo en Real-time) ----------- */
   useEffect(() => {
@@ -184,5 +191,5 @@ useEffect(() => {
     return () => clearInterval(id);
   }, [name, date, pollInterval, lap, mode]);
 
-  return { history, live, lap };
+  return { history, live, lap, home };
 }

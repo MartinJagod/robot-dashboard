@@ -129,7 +129,8 @@ const Navbar = memo(
 /* ───────── SECTION ───────── */
 
 const Section = memo(
-  ({ data, type, title, robotPosition, robotOrientation }) => {
+  ({ data, type, title, robotPosition, robotOrientation, homeCoords }) => {
+    console.log("Section", JSON.stringify(homeCoords))
     /* ------- coordenadas seguras -------- */
     const { leftPx, topPx, orientationDeg } = useMemo(() => {
       if (
@@ -156,6 +157,7 @@ const Section = memo(
               columns={COLUMNS}
               rows={ROWS}
               title={title}
+              home={homeCoords}
             />
 
             {robotPosition && (
@@ -336,15 +338,14 @@ export default function HeatmapDashboard() {
   /* ──── DATOS robot (History + Real-time) ──── */
   const enabled = lapRequested !== null;
 
-  const { history, live, lap } = useRobotData({
+  const { history, live, lap, home } = useRobotData({
     name: selectedRobot ?? 'Flocker004',  // ← nombre del robot
     date: selectedDate,
     mode,
     lapRequested: enabled ? lapRequested : undefined,
     pollInterval: enabled ? 9000 : null
   });
-
-
+  
 
 
   /* ──── SINCRONIZAR lapRequested con lap en Real-time ──── */
@@ -583,13 +584,13 @@ export default function HeatmapDashboard() {
           <div className="sections-wrapper">
             <Section data={tempGrid} type="temperature" title="Ambient temperature"
               robotPosition={{ x: safePoint.x, y: safePoint.y }}
-              robotOrientation={safePoint.orientation} />
+              robotOrientation={safePoint.orientation} homeCoords={home}  />
             <Section data={humGrid} type="humidity" title="Ambient humidity"
               robotPosition={{ x: safePoint.x, y: safePoint.y }}
-              robotOrientation={safePoint.orientation} />
+              robotOrientation={safePoint.orientation} homeCoords={home}  />
             <Section data={bedGrid} type="temperature" title="Litter Temperature"
               robotPosition={{ x: safePoint.x, y: safePoint.y }}
-              robotOrientation={safePoint.orientation} />
+              robotOrientation={safePoint.orientation} homeCoords={home}  />
           </div>
 
           <InfoSidebar
