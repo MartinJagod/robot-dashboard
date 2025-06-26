@@ -19,8 +19,8 @@ const COLUMNS = 80;
 const ROWS = 8;
 const CELL = 13;
 const BASE_LEFT = 2;
-const BASE_TOP = 36;
-const BASE_ORIENTATION = 0;
+const BASE_TOP = 22;
+const BASE_ORIENTATION = -90;
 const TARGET_MS = 4000;
 const MIN_STEP = 30;          // no bajes de ~30 ms para no saturar el main thread
 /* ───────── NAVBAR completo ───────── */
@@ -143,7 +143,7 @@ const Section = memo(
       return {
         leftPx: BASE_LEFT + robotPosition.x * CELL,
         topPx: BASE_TOP + (ROWS - 1 - robotPosition.y) * CELL,
-        orientationDeg: robotOrientation
+        orientationDeg: robotOrientation + BASE_ORIENTATION
       };
     }, [robotPosition, robotOrientation]);
 
