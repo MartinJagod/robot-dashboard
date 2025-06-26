@@ -129,7 +129,7 @@
   
   .heatmap-legend {
     flex: none;
-    width: 4rem; /* w-32 */
+    width: 5rem; /* w-32 */
     margin-top: 3%;
   }
   .dashboard-wrapper {
