@@ -20,7 +20,7 @@ const ROWS = 8;
 const CELL = 13;
 const BASE_LEFT = 2;
 const BASE_TOP = 22;
-const BASE_ORIENTATION = -90;
+const BASE_ORIENTATION = 0;
 const TARGET_MS = 4000;
 const MIN_STEP = 30;          // no bajes de ~30 ms para no saturar el main thread
 /* ───────── NAVBAR completo ───────── */
