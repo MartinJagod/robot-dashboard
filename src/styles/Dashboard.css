@@ -250,10 +250,11 @@ font-size: 1.1rem;
     flex-direction: column;
     width: 100%;
     height: 100vh;         /* ocupa toda la pantalla */
-    background-color: #f8f9fa; /* gris claro */
+    background-color: #ffffff; /* gris claro */
     font-family: 'Inter', sans-serif;
-    max-width: 1800px;
+    max-width: 95%;
     margin: 0 auto; /* 👈 centra horizontalmente */
+align-content: center;
   }
   
   .dashboard-header {
@@ -268,40 +269,43 @@ font-size: 1.1rem;
     gap: 0.2rem;
     flex-direction: row;
     padding: 2rem 0rem;
-    height: calc(100vh - 60px);   /* ⬅︎ solo controla alto; NO divide el ancho */
+   /*  height: calc(100vh - 60px); */   /* ⬅︎ solo controla alto; NO divide el ancho */
+    background-color: #ffffff;
+    margin-left: -38px;
+    max-width: 1740px;
+    margin: 0 auto;
   }
   
   .sections-wrapper {
-    flex: 0 0 87%;          /* 80 % del ancho */
+    flex: 60%;          /* 80 % del ancho */
     display: flex;
     flex-direction: column;
-    gap: 24px;
+    gap: 10px;
     overflow-y: auto;
     scrollbar-width: none; 
-    align-items: end;
+    align-items: start;
   }
   
-  .info-sidebar {
+/*   .info-sidebar {
     margin-left: -3px;
-    flex: 0 0 15%;          /* 20 % del ancho */
+    flex: 0 0 25%;         
     display: flex;
     flex-direction: column;
     gap: 11px;
-  }
+  } */
   
   
-  .info-card {
+/*   .info-card {
     display: flex
 ;
     flex-direction: column;
     justify-content: center;
     gap: 5px;
-    /* padding: 12px; */
     border-radius: 8px;
     background: #ffffff;
     box-shadow: 0 1px 4px rgba(0, 0, 0, .12);
     text-align: center;
     font-family: 'Inter', sans-serif;
-    width: 50%;
-}
+    width: 40%;
+} */
   

@@ -132,16 +132,12 @@
     width: 5rem; /* w-32 */
     margin-top: 3%;
   }
-  .dashboard-wrapper {
+ /*  .dashboard-wrapper {
     min-height: 100vh;
-    background-color: #f3f4f6; /* bg-gray-100 */
+    background-color: #f3f4f6;
   }
+   */
   
-  .dashboard-content {
-    display: flex;
-   
-
-  }
   .heatmap-body {
     display: flex;
     gap: 1.5rem;
@@ -153,11 +149,7 @@
     gap: 1rem;
     line-height: 0;
   }
-  
-  .dashboard-content{
-    background-color: white;
 
-  }
  /* ---------- Robot dropdown ---------- */
 .robot-select { 
   position: relative; 

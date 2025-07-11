@@ -224,6 +224,16 @@ export default function HeatmapDashboard() {
         .then(data => setLaps(Array.isArray(data) ? data : []))
         .catch(() => setLaps([]));
     }, [selectedDate]); */
+const fmtClock = ts =>
+  new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+const setFromToByLap = lapNum => {
+  const info = laps.find(l => l.value === lapNum);
+  if (!info) return false;          // lap no disponible aún
+  setFromTime(fmtClock(info.start_time));
+  setToTime(  fmtClock(info.end_time));
+  return true;
+};
 
   /* -------------- helper reutilizable -------------- */
   const captureCanvas = async () => {
@@ -300,11 +310,18 @@ export default function HeatmapDashboard() {
         const res = await fetch(url);
         if (!res.ok) throw new Error('❌ No se pudieron obtener las vueltas');
         const data = await res.json();
+
+        // helper local reutilizable
+        const fmt = ts =>
+          new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
         const mapped = (data.laps || []).map(lap => {
           const fmt = ts => new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
           return {
-            value: lap.lap_number,                       // num puro
+            value: lap.lap_number,
             label: `Vuelta ${lap.lap_number + 1} (${fmt(lap.start_time)} – ${fmt(lap.end_time)})`
+            , start_time: lap.start_time,
+            end_time: lap.end_time
           };
         });
 
@@ -314,10 +331,19 @@ export default function HeatmapDashboard() {
           const last = Math.max(...mapped.map(l => l.value));
           setSelectedLap(last);      //  ←  auto-sync solo RT
           setLapRequested(last);
+          // ALSO: From / To inmediatos para el Navbar en RT
+          const info = mapped.find(l => l.value === last);
+          if (info) {
+            setFromTime(fmt(info.start_time));
+            setToTime(fmt(info.end_time));
+          }
+
         } else {
           /* History: esperá a que el usuario elija */
           setSelectedLap('');        //  ←  placeholder
           setLapRequested(null);     //  ←  nada que reproducir aún
+          setFromTime('--');
+          setToTime('--');
         }
       } catch (err) {
         console.error(err);
@@ -326,13 +352,27 @@ export default function HeatmapDashboard() {
     })();
   }, [selectedDate, mode, selectedRobot]);
 
-  /* -- Nuevo efecto -- */
-  useEffect(() => {
-    if (mode === 'history' && selectedLap !== '') {
-      setLapRequested(Number(selectedLap));   // disparar animación
-    }
-  }, [mode, selectedLap]);
+/* -- Sync inmediato Navbar en History -- */
+useEffect(() => {
+  if (mode !== 'history') return;
 
+  const info = laps.find(l => l.value === Number(selectedLap));
+  if (!info) {                  // aún no eligieron
+    setLapRequested(null);
+    setFromTime('--');
+    setToTime('--');
+    return;
+  }
+
+  // 1️⃣ dispara (o mantiene) la animación
+  setLapRequested(info.value);
+
+  // 2️⃣ horas From / To para el encabezado
+  const fmt = ts =>
+    new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  setFromTime(fmt(info.start_time));
+  setToTime(  fmt(info.end_time));
+}, [mode, selectedLap, laps]);
 
 
   /* ──── DATOS robot (History + Real-time) ──── */
@@ -345,7 +385,7 @@ export default function HeatmapDashboard() {
     lapRequested: enabled ? lapRequested : undefined,
     pollInterval: enabled ? 9000 : null
   });
-  
+
 
 
   /* ──── SINCRONIZAR lapRequested con lap en Real-time ──── */
@@ -384,6 +424,27 @@ export default function HeatmapDashboard() {
     setBedGrid({});
     setLapFinished(false);
   }, [history]);
+/* -- Sync inmediato del encabezado en History -- */
+useEffect(() => {
+  if (mode !== 'history') return;               // solo History
+
+  const info = laps.find(l => l.value === Number(selectedLap));
+  if (!info) {                                  // nada elegido aún
+    setLapRequested(null);
+    setFromTime('--');
+    setToTime('--');
+    return;
+  }
+
+  /* 1️⃣  Lanza (o mantiene) la animación */
+  setLapRequested(info.value);                  // 0-based
+
+  /* 2️⃣  Horas From / To instantáneas para el Navbar */
+  const fmt = ts =>
+    new Date(ts).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' });
+  setFromTime(fmt(info.start_time));
+  setToTime(  fmt(info.end_time));
+}, [mode, selectedLap, laps]);
 
   /* Animación SOLO en History */
   useEffect(() => {
@@ -465,7 +526,7 @@ export default function HeatmapDashboard() {
   }, [mode, lapFinished]);
 
   /* ──── From / To para History ──── */
-  useEffect(() => {
+ /*  useEffect(() => {
     if (mode !== 'history' || !history.length || !history[0]?.start_time) {
       setFromTime('--'); setToTime('--'); return;
     }
@@ -474,7 +535,7 @@ export default function HeatmapDashboard() {
     const fmt = d => d.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
     setFromTime(fmt(start)); setToTime(fmt(end));
   }, [mode, history, lapRequested]);
-
+ */
   /* ──── Breeding days (independiente del modo) ──── */
   const placingDateStr = '05-05-2025';
   const placingDateView = new Date(placingDateStr).toLocaleDateString('en-US');
@@ -524,13 +585,17 @@ export default function HeatmapDashboard() {
     setSelectedDate(newDate);
     setMode('history');
   };
+useEffect(() => {
+  if (mode !== 'history') return;
+  setFromToByLap(lapRequested);              // si aún no está → no hace nada
+}, [mode, lapRequested, laps]);
 
   return (
     <main id="dashboard-capture" /* tu grilla, leyenda, etc. */>
 
       <div className="dashboard-wrapper">
         <Navbar
-          lap={lapRequested}
+          lap={lapRequested + 1 ?? selectedLap + 1}
           onPrev={() => setLapRequested(l => Math.max(1, l - 1))}
           onNext={() => setLapRequested(l => l + 1)}
           from={fromTime}
@@ -584,23 +649,27 @@ export default function HeatmapDashboard() {
           <div className="sections-wrapper">
             <Section data={tempGrid} type="temperature" title="Ambient temperature"
               robotPosition={{ x: safePoint.x, y: safePoint.y }}
-              robotOrientation={safePoint.orientation} homeCoords={home}  />
+              robotOrientation={safePoint.orientation} homeCoords={home} />
             <Section data={humGrid} type="humidity" title="Ambient humidity"
               robotPosition={{ x: safePoint.x, y: safePoint.y }}
-              robotOrientation={safePoint.orientation} homeCoords={home}  />
+              robotOrientation={safePoint.orientation} homeCoords={home} />
             <Section data={bedGrid} type="temperature" title="Litter Temperature"
               robotPosition={{ x: safePoint.x, y: safePoint.y }}
-              robotOrientation={safePoint.orientation} homeCoords={home}  />
+              robotOrientation={safePoint.orientation} homeCoords={home} />
           </div>
+          <div className="sections-wrapper2">
 
-          <InfoSidebar
-            temp={safePoint.tempF}
-            hum={safePoint.hum}
-            bedTemp={safePoint.bedF}
-            step={idx + 1}
-            lap={lapRequested}
-            distance={safePoint.traveled_distance * 3.28084}
-          />
+            <InfoSidebar
+              temp={safePoint.tempF}
+              hum={safePoint.hum}
+              bedTemp={safePoint.bedF}
+              step={idx + 1}
+              lap={lapRequested}
+              distance={safePoint.traveled_distance * 3.28084}
+              datetime={safePoint.datetime}
+              startTime={safePoint.start_time}
+            />
+          </div>
         </div>
         <Footer
           onSettingsClick={() => setSidebarOpen(o => !o)}

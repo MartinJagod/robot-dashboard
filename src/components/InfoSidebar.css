@@ -1,7 +1,5 @@
 /* src/components/InfoSidebar.css */
-.info-sidebar {
-    /* 20 % de la vista, el ancho exacto lo fija el contenedor padre con flex‑basis,
-       pero incluimos aquí la disposición interna y cualquier ajuste de color de fondo */
+/* .info-sidebar {
     display: flex;
     flex-direction: column;
     gap: 15px;
@@ -10,8 +8,27 @@
    
 
   }
+ */  
+ .info-card-wrapper2 {
+  margin-top: 15%;
+   display: flex;
+   flex-direction: column;
+  FONT-WEIGHT: 200; 
+    flex: 11%;
   
-  .info-card {
+}
+ 
+ .info-sidebar {
+  display: grid;
+  width: 15%;
+  grid-template-columns: repeat(2, 1fr); /* 🟢 Dos columnas */
+   /* 🟢 Espacio entre tarjetas */
+  align-content: baseline;
+  margin-right: -80px;
+}
+
+  
+  /* .info-card {
     display: flex;
     flex-direction: column;
     width: 40%;
@@ -24,25 +41,42 @@
     text-align: center;
     font-family: 'Inter', sans-serif;
 
-  }
+  } */
+  .info-card {
+  width: 100px;
+  height: 30px;
+  padding: 10px;
+  margin-right: 5px;
+  background-color: #f4f4f4;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  align-items: center;
+}
   
-  .info-label  { font-size: 0.6rem; color: #555; text-transform: uppercase; }
-  .info-value  { font-size: 01.8rem; font-weight: 800; }
+  .info-label  { font-size: 10px; margin-top: 10%; color: #555; text-transform: uppercase; text-align: center; }
+  .info-value  { font-size: 10px; font-weight: 800; }
   .info-icon   {  font-size: 1.1rem; justify-self: baseline; color: #fff; display: inline-flex; align-items: center; padding-right: 5px;}
   
   /* Colores por tarjeta (opcional) */
-  .info-card:nth-child(2) .info-value { color:#030303; font-size: 1.9rem; }
-  .info-card:nth-child(4) .info-value { color:#030303; font-size: 1.9rem; }
-  .info-card:nth-child(5) .info-value { color:#ff8c00; font-size: 0.9rem; } /* tiempos */
-  .info-card:nth-child(6) .info-value { color:#030303; font-size: 0.8rem; }  /* distancia */
-  .info-card:nth-child(7) .info-value { color:#030303; font-size: 0.9rem; }  /* distancia */
-  .info-card:nth-child(8) .info-value { color:#030303; font-size: 0.9rem; }  /* distancia */
-  .info-card:nth-child(9) .info-value { color:#030303; font-size: 0.9rem; }  /* distancia */
-  .info-card:nth-child(10) .info-value { color:#030303; font-size: 0.9rem; }  /* distancia */
-  .info-card:nth-child(12) .info-value { color: #fff; font-size: 0.9rem; display: inline-flex;align-items: center; margin: 0 auto; }  /* distancia */
-  .info-card:nth-child(12)  { background-color: #ff8c00; }  /* distancia */
+  .info-card-wrapper2:nth-child(1) .info-value { color:#030303; font-size: 0.8rem; text-align: center; width: 100%;}
+  .info-card-wrapper2:nth-child(2) .info-value { color:#030303; font-size: 0.8rem; text-align: center; width: 100%;}
+  .info-card-wrapper2:nth-child(3) .info-value { color:#030303; font-size: 0.7rem; text-align: center; width: 100%;}
+  .info-card-wrapper2:nth-child(4) .info-value { color:#030303; font-size: 0.7rem; text-align: center; width: 100%;}
+  .info-card-wrapper2:nth-child(5) .info-value { background-color:#ff8c00; color:white; font-size: 0.6rem; width: 100%;} /* tiempos */
+  .info-card-wrapper2:nth-child(5) .info-card { background-color:#ff8c00;} /* tiempos */
+  
+  .info-card-wrapper2:nth-child(6) .info-value { background-color:#ff8c00; color:white; font-size: 0.5rem; width: 100%;}  /* distancia */
+  .info-card-wrapper2:nth-child(6) .info-card { background-color:#ff8c00;} /* tiempos */
 
-  .info-card:nth-child(13) .info-value { color:#e63946; font-size: 0.9rem; }  /* distancia */
-  .info-card:nth-child(14) .info-value { color:#fff; font-size: 0.9rem;display: inline-flex;align-items: center; margin: 0 auto; }  /* distancia */ 
-  .info-card:nth-child(14)  { background-color: #ff8c00; }
+  .info-card-wrapper2:nth-child(7) .info-value { color:#030303; font-size: 0.6rem; }  /* distancia */
+  .info-card-wrapper2:nth-child(8) .info-value { color:#030303; font-size: 0.6rem; }  /* distancia */
+  .info-card-wrapper2:nth-child(9) .info-value { color:#030303; font-size: 0.6rem; }  /* distancia */
+  .info-card-wrapper2:nth-child(10) .info-value { color:#030303; font-size: 0.6rem; }  /* distancia */
+  .info-card-wrapper2:nth-child(12) .info-value { color: #fff; font-size: 0.6rem; display: inline-flex;align-items: center; margin: 0 auto; }  /* distancia */
+  .info-card-wrapper2:nth-child(12)  { background-color: #ff8c00; }  /* distancia */
+
+  .info-card-wrapper2:nth-child(13) .info-value { color:#e63946; font-size: 0.6rem; }  /* distancia */
+  .info-card-wrapper2:nth-child(14) .info-value { color:#fff; font-size: 0.6rem;display: inline-flex;align-items: center; margin: 0 auto; }  /* distancia */ 
+  .info-card-wrapper2:nth-child(14)  { background-color: #ff8c00; }
   

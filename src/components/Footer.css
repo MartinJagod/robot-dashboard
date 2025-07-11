@@ -2,7 +2,7 @@
 .footer-bar {
     position: fixed;
     left: 0;
-    top: 95%;
+    bottom: 0;
     right: 0;
     display: flex;
     justify-content: space-between;
