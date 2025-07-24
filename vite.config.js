@@ -8,9 +8,9 @@ export default defineConfig({
     port: 5173,
     proxy: {
       '/api': {
-        target: 'http://192.168.191.156:8000', // IP de tu backend
+        target: 'http://localhost:3001', // 👈 el backend correcto
         changeOrigin: true,
-        secure: false       // si fuese https auto-firmado
+        secure: false
       }
     }
   }
