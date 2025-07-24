@@ -12,7 +12,7 @@ import '../styles/Navbar.css';
 import Footer from '../components/Footer';
 import html2canvas from 'html2canvas';   // si vas a capturar pantalla (opcional)
 import { jsPDF } from 'jspdf';
-
+import { API_BASE } from '../utils/apiBase';
 
 /* ───── grilla 80 × 8 ───── */
 const COLUMNS = 80;
@@ -33,6 +33,7 @@ const ROBOTS = [
   'Flocker006',
   'Flocker007',
   'Flocker008',
+  'Beetle001'
 ];
 const Navbar = memo(
   ({
@@ -219,7 +220,7 @@ export default function HeatmapDashboard() {
   /*   useEffect(() => {
       if (!selectedDate) { setLaps([]); return; }
   
-      fetch(`/api/laps?date=${selectedDate}`)
+      fetch(`${API_BASE}/laps?date=${selectedDate}`)
         .then(r => (r.ok ? r.json() : []))
         .then(data => setLaps(Array.isArray(data) ? data : []))
         .catch(() => setLaps([]));
@@ -305,7 +306,7 @@ const setFromToByLap = lapNum => {
     (async () => {
       try {
         const robot = selectedRobot || 'Flocker004';   // fallback si aún no eligieron
-        const url = `/api/robot_lap_summary?name=${robot}&date=${selectedDate}`;
+        const url = `${API_BASE}/robot_lap_summary?name=${robot}&date=${selectedDate}`;
         console.log('⏳ Fetching laps', url);
         const res = await fetch(url);
         if (!res.ok) throw new Error('❌ No se pudieron obtener las vueltas');
@@ -595,7 +596,7 @@ useEffect(() => {
 
       <div className="dashboard-wrapper">
         <Navbar
-          lap={lapRequested + 1 ?? selectedLap + 1}
+          lap={(lapRequested ?? selectedLap) + 1}
           onPrev={() => setLapRequested(l => Math.max(1, l - 1))}
           onNext={() => setLapRequested(l => l + 1)}
           from={fromTime}
