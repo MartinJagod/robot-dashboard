@@ -33,7 +33,8 @@ const ROBOTS = [
   'Flocker006',
   'Flocker007',
   'Flocker008',
-  'Beetle001'
+  'Beetle001',
+  'Beetle002'
 ];
 const Navbar = memo(
   ({
