@@ -2,47 +2,56 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './Login.css';
 
-const Login = () => {
-  const [email, setEmail] = useState('');
+const API_URL = import.meta.env.VITE_API_URL || '';
+
+export default function Login() {
+  const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [error, setError]       = useState('');
+  const [loading, setLoading]   = useState(false);
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/login`, {
-        method: 'POST',
+      const res  = await fetch(`${API_URL}/login`, {
+        method : 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password }),
+        body   : JSON.stringify({ email, password })
       });
-
       const data = await res.json();
 
-      if (res.ok) {
-        // Guardar el userId (podés usar localStorage, contexto, etc.)
-        localStorage.setItem('userId', data.userId);
-        navigate('/heatmap/1');
-      } else {
-        setError(data.error || 'Login incorrecto');
+      if (!res.ok || !data?.success || !data?.userId) {
+        throw new Error(data?.error || `Login falló (HTTP ${res.status})`);
       }
+
+      /* ---------- guardar perfil en sessionStorage ---------- */
+      sessionStorage.setItem('user', JSON.stringify({ id: data.userId }));
+
+      /* ---------- redirigir ---------- */
+      navigate('/select-robot');           // o la ruta que corresponda
     } catch (err) {
-      console.error('Error de conexión:', err);
-      setError('Error de conexión con el servidor');
+      console.error(err);
+      setError(err.message || 'Error de conexión');
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="login-container">
-        <img src="/Logos/aviRobotsLogo.png" alt="Avia Robots Logo" />
+      <img src="/Logos/aviRobotsLogo.png" alt="Avi Robots" />
       <form onSubmit={handleSubmit}>
         <input
           type="email"
           placeholder="Email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          autoComplete="email"
           required
         />
         <input
@@ -50,13 +59,14 @@ const Login = () => {
           placeholder="Contraseña"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          autoComplete="current-password"
           required
         />
-        {error && <p className="error">{error}</p>}
-        <button type="submit">Ingresar</button>
+        {error   && <p className="error">{error}</p>}
+        <button type="submit" disabled={loading}>
+          {loading ? 'Ingresando…' : 'Ingresar'}
+        </button>
       </form>
     </div>
   );
-};
-
-export default Login;
+}

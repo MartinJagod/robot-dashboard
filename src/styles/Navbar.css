@@ -3,12 +3,12 @@
 .navbar {
     width: 100%;
     background-color: white;
-    padding-left: 2rem;  /* 8 * 0.25rem = 2rem */
+     /* 8 * 0.25rem = 2rem */
     padding-right: 2rem;
     padding-top: 0.75rem; /* 3 * 0.25rem = 0.75rem */
     padding-bottom: 0.75rem;
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   }
@@ -29,7 +29,7 @@
     flex-direction: row;
     align-items: center;
     gap: 3rem; /* gap-12 en Tailwind es 3rem */
-    width: 30%;
+    width: 70%;
     justify-content: center;
 
   }
@@ -38,7 +38,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    color: #4b5563; /* text-gray-700 */
+    color: #000000; /* text-gray-700 */
     width: 33%;
   }
   
@@ -87,9 +87,7 @@
     align-items: flex-start;
     padding: 0.5rem; /* p-2 */
     margin-right: 1%;
-    border: 3px solid #f7941e; /* default border color en Tailwind */
     border-radius: 0.7rem; /* rounded-md */
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1); /* shadow-inner */
     font-size: 0.775rem; /* text-sm */
     background-color: white;
   }
@@ -227,4 +225,147 @@ justify-content: center;
   margin-top: 14px;
   margin-left: 5px;
   text-align: center;
+}
+/* Flecha atrás */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: #f2f2f2;
+  color: #111;
+  text-decoration: none;
+}
+.back-btn:hover { filter: brightness(0.95); }
+
+/* Estructura del título */
+.barn-title-wrap { display: flex; flex-direction: column; gap: 0.25rem; }
+.title-row { display: flex; align-items: center; gap: 0.4rem; }
+
+.home-icon { color: #ff6a00; display: inline-flex; }
+
+.barn-title { font-size: 1.7rem; font-weight: 600; color: #111; letter-spacing: 0.2px; }
+.barn-number { font-weight: 600; }
+
+/* Pill del robot */
+.robot-pill {
+  display: inline-block;
+  background: #f3f3f3;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-weight: 700;
+  color: #ff6a00;
+  line-height: 1;
+  width: fit-content;
+  user-select: none;
+}
+
+@media (max-width: 640px) {
+  .barn-title { font-size: 1rem; }
+  .robot-pill { font-size: 0.85rem; }
+}
+
+/* CSS para la rosa de los vientos */
+.compass-rose {
+  position: relative;
+  display: inline-block;
+  line-height: 1;
+  user-select: none;
+}
+
+.compass-icon {
+  width: 100%;
+  height: 100%;
+  color: #111;           /* aro */
+}
+
+/* Texto cardinal/intercardinal */
+.c-label {
+  position: absolute;
+  font-size: 0.58em;     /* escala automáticamente con el size del contenedor */
+  font-weight: 700;
+  color: #111;
+  pointer-events: none;
+  text-shadow: 0 1px 0 #fff; /* mejora legibilidad sobre fondos claros */
+}
+
+/* Cardinales */
+.c-n { top: -0.35em; left: 50%; transform: translateX(-50%); }
+.c-s { bottom: -0.35em; left: 50%; transform: translateX(-50%); }
+.c-e { right: -0.35em; top: 50%; transform: translateY(-50%); }
+.c-w { left: -0.35em; top: 50%; transform: translateY(-50%); }
+
+/* Intercardinales (pegados a las esquinas) */
+.c-ne { top: 0.1em; right: 0.1em; font-size: 0.5em; }
+.c.se, .c-se { bottom: 0.1em; right: 0.1em; font-size: 0.5em; }
+.c-sw { bottom: 0.1em; left: 0.1em; font-size: 0.5em; }
+.c-nw { top: 0.1em; left: 0.1em; font-size: 0.5em; }
+
+/* Si querés el triángulo interno naranja estilo “puntero”, podés pseudo-dibujarlo: */
+.compass-rose::after {
+  content: "";
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 0; height: 0;
+  border-left: 0.22em solid transparent;
+  border-right: 0.22em solid transparent;
+  border-bottom: 0.38em solid #ff6a00; /* naranja Avia */
+  transform: translate(-50%, -70%) rotate(0deg); /* ajustá el rotate si querés orientar el puntero */
+}
+.compass-one {
+  position: relative;
+  display: inline-block;
+  line-height: 1;
+  user-select: none;
+}
+.compass-ring { width: 100%; height: 100%; color: #111; }
+
+/* puntero naranja opcional */
+.compass-one .pointer {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 0; height: 0;
+  border-left: 0.22em solid transparent;
+  border-right: 0.22em solid transparent;
+  border-bottom: 0.38em solid #ff6a00;
+  content: "";
+  display: inline-block;
+}
+
+/* letra cardinal */
+.only-label {
+  position: absolute;
+  font-weight: 800;
+  color: #111;
+  text-shadow: 0 1px 0 #fff;
+  font-size: 0.75em;  /* escala con el tamaño del contenedor */
+  pointer-events: none;
+}
+
+/* ubicaciones */
+.pos-n { top: -0.05em; left: 50%; transform: translateX(-50%); }
+.pos-s { bottom: -0.1em; left: 50%; transform: translateX(-50%); }
+.pos-e { right: -1em; top: 50%; transform: translateY(-50%); }
+.pos-w { left: -1.5em; top: 50%; transform: translateY(-50%); }
+
+/* Fin CSS rosa de los vientos */
+.robot-pill .tz-label {
+  margin-left: .25rem;
+  font-weight: 400;
+  opacity: .7;
+}
+.history-card__field input[type="date"] {
+  cursor: pointer;
+}
+
+.history-card__field input[type="date"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Feedback visual cuando hay fechas limitadas */
+.history-card__field input[type="date"]:valid {
+  border-color: #4CAF50;
 }

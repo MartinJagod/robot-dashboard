@@ -16,8 +16,6 @@ import { API_BASE } from '../utils/apiBase';
 import RobotManagerModal from "../components/RobotManagerModal";
 import CompassRose from "../components/CompassRose";
 import { useParams } from "react-router-dom";
-import { toRobotLocalDate,  tzLabel  } from '../utils/robotTZ';
-import useWorkdays from '../hooks/useWorkdays';
 
 /* ───── grilla 80 × 8 ───── */
 const COLUMNS = 80;
@@ -37,19 +35,19 @@ export let ROBOTS = [];          // referencia fija; mutamos su contenido
   try {
     const res = await fetch(`${API_BASE}/robots`);   // trae TODOS
     if (!res.ok) throw new Error("Bad response");
-    
+
     const data = await res.json();                   // array de objetos
     /* 1. Filtra status === 1
-    2. Extrae sólo name
-    3. Elimina duplicados con Set (por si acaso) */
+       2. Extrae sólo name
+       3. Elimina duplicados con Set (por si acaso) */
     const activeNames = [...new Set(
       data.filter(r => Number(r.status) === 1)
-      .map(r => r.name.trim())
+        .map(r => r.name.trim())
     )];
-    
+
     /* 4. Mutamos el array const sin cambiar la referencia */
     ROBOTS.splice(0, ROBOTS.length, ...activeNames);
-    
+
   } catch (err) {
     console.error("⚠️ No se pudieron cargar los robots:", err);
   }
@@ -73,8 +71,8 @@ const Navbar = memo(
     mode
   }) => {
     // ➋ Robot seleccionado (se usará luego en useRobot)
-    
-    
+
+
     return (
       <div className="navbar">
         {/* ─────── Bloque central ─────── */}
@@ -97,7 +95,6 @@ const Navbar = memo(
                 <span className="barn-title">
                   Barn&nbsp;<strong className="barn-number">002</strong>
                 </span>
-                <span className="tz-label"> · {tzLabel(selectedRobot)}</span>
               </div>
 
               {/* Pill con el nombre del robot (hardcodeado por ahora) */}
@@ -116,7 +113,7 @@ const Navbar = memo(
                 /* visibility: isRealTime ? 'hidden' : 'visible', */
                 pointerEvents: isRealTime ? 'none' : 'auto'
               }}
-              >
+            >
               <ChevronLeft onClick={onPrev} style={{ cursor: 'pointer' }} />
             </span>
 
@@ -124,8 +121,8 @@ const Navbar = memo(
               <span className="lap-number">Lap {String(lap).padStart(2, '0')}</span><br />
 
              {mode === 'realTime' ? (
-               /* Real-Time con punto rojo */
-               <span style={{fontSize:"0.9rem", textAlign:"center"}} >
+            /* Real-Time con punto rojo */
+            <span style={{fontSize:"0.9rem", textAlign:"center"}} >
               Real Time Mode
               <span className="status-dot" />
             </span>
@@ -152,7 +149,7 @@ const Navbar = memo(
                 visibility: isRealTime ? 'hidden' : 'visible',
                 pointerEvents: isRealTime ? 'none' : 'auto'
               }}
-              >
+            >
               <ChevronRight onClick={onNext} style={{ cursor: 'pointer' }} />
             </span>
           </div>
@@ -177,7 +174,7 @@ const Navbar = memo(
                   value={selectedRobot}
                   onChange={e => onRobotChange(e.target.value)}
                   className="robot-dropdown"
-                  >
+                >
                   <option value="">
                     {ROBOTS.length === 0 ? 'No robot available' : 'Select robot…'}
                   </option>
@@ -203,7 +200,7 @@ const Navbar = memo(
           src="/Logos/aviRobotsLogo.png"
           alt="Avi Robots"
           className="h-12 object-contain logo-img"
-          />
+        />
       </div>
     );
   }
@@ -229,7 +226,7 @@ const Section = memo(
         orientationDeg: robotOrientation + BASE_ORIENTATION
       };
     }, [robotPosition, robotOrientation]);
-    
+
     return (
       <div className="heatmap-section">
         <div className="heatmap-grid-legend-container">
@@ -241,24 +238,24 @@ const Section = memo(
               rows={ROWS}
               title={title}
               home={homeCoords}
-              />
+            />
 
             {robotPosition && (
               <img
-              src="/assets/robot-icon.svg"
-              alt="Robot position"
-              className="robot-icon"
-              style={{
-                position: 'absolute',
-                left: `${leftPx}px`,
-                top: `${topPx}px`,
-                transform: `rotate(${orientationDeg}deg)`,
-                transition: 'left .12s linear, top .12s linear, transform 0.2s linear',
-                width: 14,
-                height: 14,
-                zIndex: 10,
-                pointerEvents: 'none'
-              }}
+                src="/assets/robot-icon.svg"
+                alt="Robot position"
+                className="robot-icon"
+                style={{
+                  position: 'absolute',
+                  left: `${leftPx}px`,
+                  top: `${topPx}px`,
+                  transform: `rotate(${orientationDeg}deg)`,
+                  transition: 'left .12s linear, top .12s linear, transform 0.2s linear',
+                  width: 14,
+                  height: 14,
+                  zIndex: 10,
+                  pointerEvents: 'none'
+                }}
               />
             )}
           </div>
@@ -299,37 +296,6 @@ export default function HeatmapDashboard() {
   const [selectedDate, setSelectedDate] = useState(
     new Date().toISOString().slice(0, 10)
   );
-  const { workdays } = useWorkdays(selectedRobot);
-
-/*   const ROBOT_TZ = {
-    // Beetles
-    Beetle001: -4,      // Canadá (UTC-4)
-    Beetle003: -4,      // Canadá
-    Beetle002: -3,      // Argentina (UTC-3)
-    Beetle004: -4,      // USA  (UTC-4)
-  BeetleUsa: -4,      // USA
-  
-  
-  // Flockers
-  Flocker001: -4,     // Canadá
-  Flocker002: -4,
-  Flocker003: -4,
-  Flocker004: -4,
-}; */
-
-/** Devuelve un objeto Date ya corregido al huso horario del robot */
-/* const toRobotLocalDate = (robotName, utcISO) => {
-  const offset = ROBOT_TZ[robotName] ?? 0;          // fallback UTC
-  const utc     = new Date(utcISO);                 // viene en UTC-0
-  return new Date(utc.getTime() + offset * 3_600_000);
-};
- */
-/** Formatea hh:mm (p.ej. '14 : 07') */
-const fmtHHMM = (d) =>
-  `${d.getHours().toString().padStart(2, '0')} : ${d
-    .getMinutes()
-    .toString()
-    .padStart(2, '0')}`;
   /* const { data, loading, error } = useRobotData(selectedRobot); */
   /* ──── API laps cuando cambia la fecha ──── */
   /*   useEffect(() => {
@@ -384,9 +350,9 @@ const fmtHHMM = (d) =>
   }, [robotid]);
 
 
- const fmtClock = ts =>
-   toRobotLocalDate(selectedRobot, ts)
-     .toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+  const fmtClock = ts =>
+    new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
   const setFromToByLap = lapNum => {
     const info = laps.find(l => l.value === lapNum);
@@ -460,82 +426,80 @@ const fmtHHMM = (d) =>
       ? document.exitFullscreen()
       : el.requestFullscreen?.();
   };
+  useEffect(() => {
+    if (!selectedDate || !selectedRobot) return;
 
-  
-useEffect(() => {
-  if (!selectedDate || !selectedRobot) return;
+    (async () => {
+      try {
+        const robot = selectedRobot || 'Flocker004';   // fallback si aún no eligieron
+        const url = `${API_BASE}/robot_lap_summary?name=${robot}&date=${selectedDate}`;
+        console.log('⏳ Fetching laps', url);
+        const res = await fetch(url);
+        if (!res.ok) throw new Error('❌ No se pudieron obtener las vueltas');
+        const data = await res.json();
 
-  (async () => {
-    try {
-      const robot = selectedRobot || 'Flocker004';   // fallback si aún no eligieron
-      const url = `${API_BASE}/robot_lap_summary?name=${robot}&date=${selectedDate}`;
-      console.log('⏳ Fetching laps', url);
-      const res = await fetch(url);
-      if (!res.ok) throw new Error('❌ No se pudieron obtener las vueltas');
-      const data = await res.json();
+        // helper local reutilizable
+        const fmt = ts =>
+          new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-      // helper que usa el timezone del robot
-      const fmtRobot = ts =>
-        toRobotLocalDate(selectedRobot, ts)
-          .toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const mapped = (data.laps || []).map(lap => {
+          const fmt = ts => new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+          return {
+            value: lap.lap_number,
+            label: `Vuelta ${lap.lap_number + 1} (${fmt(lap.start_time)} – ${fmt(lap.end_time)})`
+            , start_time: lap.start_time,
+            end_time: lap.end_time
+          };
+        });
 
-      const mapped = (data.laps || []).map(lap => {
-        return {
-          value: lap.lap_number,
-          label: `Vuelta ${lap.lap_number + 1} (${fmtRobot(lap.start_time)} – ${fmtRobot(lap.end_time)})`,
-          start_time: lap.start_time,
-          end_time: lap.end_time
-        };
-      });
+        setLaps(mapped);
 
-      setLaps(mapped);
+        if (mode === 'realTime') {
+          const last = Math.max(...mapped.map(l => l.value));
+          setSelectedLap(last);      //  ←  auto-sync solo RT
+          setLapRequested(last);
+          // ALSO: From / To inmediatos para el Navbar en RT
+          const info = mapped.find(l => l.value === last);
+          if (info) {
+            setFromTime(fmt(info.start_time));
+            setToTime(fmt(info.end_time));
+          }
 
-      if (mode === 'realTime') {
-        const last = Math.max(...mapped.map(l => l.value));
-        setSelectedLap(last);      //  ←  auto-sync solo RT
-        setLapRequested(last);
-        // ALSO: From / To inmediatos para el Navbar en RT
-        const info = mapped.find(l => l.value === last);
-        if (info) {
-          setFromTime(fmtRobot(info.start_time));
-          setToTime(fmtRobot(info.end_time));
+        } else {
+          /* History: esperá a que el usuario elija */
+          setSelectedLap('');        //  ←  placeholder
+          setLapRequested(null);     //  ←  nada que reproducir aún
+          setFromTime('--');
+          setToTime('--');
         }
-      } else {
-        /* History: esperá a que el usuario elija */
-        setSelectedLap('');        //  ←  placeholder
-        setLapRequested(null);     //  ←  nada que reproducir aún
-        setFromTime('--');
-        setToTime('--');
+      } catch (err) {
+        console.error(err);
+        setLaps([]);
       }
-    } catch (err) {
-      console.error(err);
-      setLaps([]);
-    }
-  })();
-}, [selectedDate, mode, selectedRobot]);
+    })();
+  }, [selectedDate, mode, selectedRobot]);
 
   /* -- Sync inmediato Navbar en History -- */
- useEffect(() => {
-  if (mode !== 'history') return;
+  useEffect(() => {
+    if (mode !== 'history') return;
 
-  const info = laps.find(l => l.value === Number(selectedLap));
-  if (!info) {                  // aún no eligieron
-    setLapRequested(null);
-    setFromTime('--');
-    setToTime('--');
-    return;
-  }
+    const info = laps.find(l => l.value === Number(selectedLap));
+    if (!info) {                  // aún no eligieron
+      setLapRequested(null);
+      setFromTime('--');
+      setToTime('--');
+      return;
+    }
 
-  // 1️⃣ dispara (o mantiene) la animación
-  setLapRequested(info.value);
+    // 1️⃣ dispara (o mantiene) la animación
+    setLapRequested(info.value);
 
-  // 2️⃣ horas From / To para el encabezado usando timezone del robot
-  const fmtRobot = ts =>
-    toRobotLocalDate(selectedRobot, ts)
-      .toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  setFromTime(fmtRobot(info.start_time));
-  setToTime(fmtRobot(info.end_time));
-}, [mode, selectedLap, laps, selectedRobot]);
+    // 2️⃣ horas From / To para el encabezado
+    const fmt = ts =>
+      new Date(ts).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    setFromTime(fmt(info.start_time));
+    setToTime(fmt(info.end_time));
+  }, [mode, selectedLap, laps]);
 
   const POLL_MS = 9000; // 50s
   /* ──── DATOS robot (History + Real-time) ──── */
@@ -548,10 +512,7 @@ useEffect(() => {
     lapRequested,                        // el hook lo usa sólo en 'history'
     pollInterval: mode === 'realTime' ? POLL_MS : null
   });
-/* 🔍 LOG cada vez que cambie */
-useEffect(() => {
-  console.log('📜 history →', history);
-}, [history]);
+
 
 
   /* ──── SINCRONIZAR lapRequested con lap en Real-time ──── */
@@ -807,7 +768,6 @@ useEffect(() => {
           laps={laps}
           selectedRobot={selectedRobot}       // ← ahora lo recibe
           onRobotChange={setSelectedRobot}
-          workdays={workdays}
 
         />
 
@@ -835,7 +795,6 @@ useEffect(() => {
               distance={safePoint.traveled_distance * 3.28084}
               datetime={safePoint.datetime}
               startTime={safePoint.start_time}
-              robotName={selectedRobot}
             />
           </div>
         </div>

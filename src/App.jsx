@@ -14,7 +14,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/select-robot" element={<SelectRobot />} />
           <Route path="/dashboard/:id" element={<Dashboard />} />
-          <Route path="/heatmap/:id" element={<HeatmapDashboard />} />
+          <Route path="/heatmap/:id/:robotid" element={<HeatmapDashboard />} />
         </Routes>
       </div>
     </Router>

@@ -3,7 +3,6 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPersonWalking, faStopwatch } from '@fortawesome/free-solid-svg-icons';
 import './InfoSidebar.css'; // Importa el CSS para el sidebar
-import { toRobotLocalDate } from '../utils/robotTZ';
 const Card = ({ label, value, icon }) => (
   <div className="info-card-wrapper2">
     <span className="info-label">{label}</span>
@@ -15,8 +14,7 @@ const Card = ({ label, value, icon }) => (
   </div>
 );
 
- export default function InfoSidebar({ robotName, temp, hum, bedTemp,
-                                      step, distance, datetime, startTime }) {
+export default function InfoSidebar({ temp, hum, bedTemp, step, distance, datetime, startTime }) {
   /* lecturas en vivo */
   const tempNow = `${temp?.toFixed(1)} °F`;
   const humNow = `${hum?.toFixed(1)} %`;
@@ -26,17 +24,17 @@ const Card = ({ label, value, icon }) => (
 
   /* 1 · Working since */
   const workingSince = startTime
-   ? toRobotLocalDate(robotName, startTime)
-       .toLocaleTimeString([], { hour:'2-digit', minute:'2-digit', second:'2-digit' })
+    ? new Date(startTime).toLocaleTimeString([], {
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    })
     : '--';
 
   /* 2 · Time working   = datetime − startTime */
   const timeWorkingSec =
-   datetime && startTime
-     ? Math.max(
-         0,
-         (toRobotLocalDate(robotName, datetime) -
-          toRobotLocalDate(robotName, startTime)) / 1000)
+    datetime && startTime
+      ? Math.max(0, (new Date(datetime) - new Date(startTime)) / 1000)
       : 0;
   const timeWorking =
     new Date(timeWorkingSec * 1000).toISOString().substr(11, 8).replace(/:/g, ' : ');

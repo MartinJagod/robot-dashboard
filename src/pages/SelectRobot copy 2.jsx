@@ -63,10 +63,8 @@ export default function SelectRobot () {
   const [current, setCurrent] = useState(0);    // índice tarjeta central
   const [loading, setLoading] = useState(true);
   const [err, setErr]         = useState(null);
-
 const fmt1 = v => Number.isFinite(Number(v)) ? Number(v).toFixed(1) : '--';
 const hasValue = v => v !== null && v !== undefined && v !== '' && Number.isFinite(Number(v));
-
 // helper arriba del componente
 const fmtF = (c) => {
   const n = Number(c);
@@ -104,21 +102,11 @@ const fmtF = (c) => {
     return () => { alive = false; };
   }, []);
 
-  /* Helpers UI - CORREGIDO */
-  const mod = (n, m) => {
-    if (m === 0) return 0;
-    return ((n % m) + m) % m;
-  };
-  
-  const prev = () => setCurrent(i => mod(i - 1, robots.length));
-  const next = () => setCurrent(i => mod(i + 1, robots.length));
-  
-  // Función mejorada para obtener el robot en la posición offset
-  const get = (offset) => {
-    if (robots.length === 0) return null;
-    const index = mod(current + offset, robots.length);
-    return robots[index];
-  };
+  /* Helpers UI (sin cambios) */
+  const mod   = (n, m) => (m ? ((n % m) + m) % m : 0);         // verdadero módulo (+ loop)
+  const prev  = ()     => setCurrent(i => mod(i - 1, robots.length));
+  const next  = ()     => setCurrent(i => mod(i + 1, robots.length));
+  const get   = (o)    => robots[mod(current + o, robots.length)];
 
   /* Estados de carga / error (ligeros, no rompen el layout) */
   if (loading) {
@@ -183,38 +171,25 @@ const fmtF = (c) => {
 
       <div className="carousel-wrapper">
         {/* ───────────── Flecha izquierda ───────────── */}
-        <button className="nav-btn left" onClick={prev} disabled={robots.length <= 1}>‹</button>
+        <button className="nav-btn left" onClick={prev}>‹</button>
 
         {/* ───────────── Tres tarjetas visibles ───────────── */}
         <div className="carousel-track">
           {[-1, 0, 1].map((offset) => {
             const r = get(offset);
-            
-            // Si no hay robot (caso de 1 o 2 robots), renderizar tarjeta vacía invisible
-            if (!r) {
-              return (
-                <div
-                  key={`empty-${offset}`}
-                  className={`robot-card ${offset === 0 ? 'center' : 'side'}`}
-                  style={{ visibility: 'hidden' }}
-                />
-              );
-            }
-
             const online = hasValue(r.humidity);
-            
             return (
               <div
-                key={`${r.id}-${offset}`}
+                key={r.id}
                 className={`robot-card ${offset === 0 ? 'center' : 'side'}`}
               >
                 {/* ---------- Encabezado ---------- */}
                 <h2>{r.name}</h2>
 
-                <span className={`robot-pill ${online ? 'is-online' : 'is-offline'}`}>
-                  <span className="status-dot" />
-                  {online ? 'On Line' : 'Off Line'}
-                </span>
+<span className={`robot-pill ${online ? 'is-online' : 'is-offline'}`}>
+  <span className="status-dot" />
+  {online ? 'On Line' : 'Off Line'}
+</span>
 
                 {/* ---------- Temp / Hum big boxes ---------- */}
                 <div className="metrics-grid">
@@ -258,7 +233,7 @@ const fmtF = (c) => {
         </div>
 
         {/* ───────────── Flecha derecha ───────────── */}
-        <button className="nav-btn right" onClick={next} disabled={robots.length <= 1}>›</button>
+        <button className="nav-btn right" onClick={next}>›</button>
       </div>
 
       <Footer />

@@ -82,7 +82,7 @@ const HeatmapGrid = ({ data, type, columns, rows, title, home }) => {
   <div className="heatmap-wrapper " >
     
     <FontAwesomeIcon icon={faHouse} className="house-start" style={houseStyle} />
-    {title && <h3 className="heatmap-title">{title}</h3>}
+    {title && <h3 className="heatmap-title" >{title}</h3>}
     <div
       className="heatmap-grid"
       style={{

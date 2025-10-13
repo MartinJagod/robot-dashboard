@@ -1,0 +1,119 @@
+/* === RobotManagerModal.css === */
+
+/* variables de color reutilizables */
+:root {
+  --orange: #ff6a00;
+  --orange-hover: #e85c00;
+}
+
+/* capa oscura que cubre toda la pantalla y centra el modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 10px;
+}
+
+/* contenedor blanco del popup */
+.modal-container {
+  background: #ffffff;
+  border-radius: 12px;
+  max-width: 780px;
+  width: 100%;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+/* header con título y botón de cerrar */
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 18px;
+}
+
+.modal-header h2 {
+  font-size: 20px;
+  margin: 0;
+}
+
+/* botón ícono genérico */
+.icon-btn {
+  background: none;
+  border: none;
+  padding: 6px;
+  cursor: pointer;
+  border-radius: 6px;
+  transition: background 0.15s ease;
+}
+
+.icon-btn:hover { background: #e9e9e9; }
+
+/* tabla */
+.robots-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 18px;
+  font-size: 14px;
+}
+
+.robots-table th,
+.robots-table td {
+  padding: 10px 8px;
+  text-align: left;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.robots-table thead th { background: #fafafa; }
+
+/* inputs y selects dentro de la tabla */
+.robots-table input,
+.robots-table select {
+  width: 100%;
+  padding: 6px 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 13px;
+  background: #f9f9f9;
+}
+
+/* celda de acciones */
+.actions {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+}
+
+/* botón “Añadir robot” */
+.add-btn {
+  align-self: flex-start;
+  background: var(--orange);
+  color: #fff;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-weight: bold;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background 0.2s ease;
+  font-size: 14px;
+}
+
+.add-btn:hover { background: var(--orange-hover); }
+
+/* mensaje de error */
+.error-msg {
+  color: red;
+  margin-bottom: 12px;
+  font-size: 13px;
+}

@@ -47,20 +47,20 @@
   height: 30px;
   padding: 10px;
   margin-right: 5px;
-  background-color: #f4f4f4;
-  border-radius: 8px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 2px 2px 1px rgba(0, 0, 0, 0.2);
   text-align: center;
   align-items: center;
 }
   
-  .info-label  { font-size: 10px; margin-top: 10%; color: #555; text-transform: uppercase; text-align: center; }
-  .info-value  { font-size: 10px; font-weight: 800; }
+  .info-label  { font-size: 12px; margin-top: 10%; color: #000000; text-transform: uppercase; text-align: center; }
+  .info-value  { font-size: 12px; font-weight: 800; }
   .info-icon   {  font-size: 1.1rem; justify-self: baseline; color: #fff; display: inline-flex; align-items: center; padding-right: 5px;}
   
   /* Colores por tarjeta (opcional) */
-  .info-card-wrapper2:nth-child(1) .info-value { color:#030303; font-size: 0.8rem; text-align: center; width: 100%;}
-  .info-card-wrapper2:nth-child(2) .info-value { color:#030303; font-size: 0.8rem; text-align: center; width: 100%;}
+  .info-card-wrapper2:nth-child(1) .info-value { color:#030303; font-size: 1.5rem; text-align: center; width: 100%;}
+  .info-card-wrapper2:nth-child(2) .info-value { color:#030303; font-size: 1.5rem; text-align: center; width: 100%;}
   .info-card-wrapper2:nth-child(3) .info-value { color:#030303; font-size: 0.7rem; text-align: center; width: 100%;}
   .info-card-wrapper2:nth-child(4) .info-value { color:#030303; font-size: 0.7rem; text-align: center; width: 100%;}
   .info-card-wrapper2:nth-child(5) .info-value { background-color:#ff8c00; color:white; font-size: 0.6rem; width: 100%;} /* tiempos */
