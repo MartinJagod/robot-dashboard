@@ -25,7 +25,7 @@ const transform = (raw, prev = null) => {
       // Sin movimiento → mantiene la orientación previa
       orientation = prev.orientation;
     } else if (Math.abs(dx) >= Math.abs(dy)) {
-      orientation = dx > 0 ?  90 : -90;  // derecha | izquierda
+      orientation = dx > 0 ?  90 : 270;  // derecha | izquierda
     } else {
       orientation = dy > 0 ?   0 : 180;  // abajo   | arriba
     }

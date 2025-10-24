@@ -2,6 +2,7 @@ import React from 'react';
 import './HeatmapGrid.css'; // << Importás el CSS nuevo
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faHouse }        from '@fortawesome/free-solid-svg-icons';
+import { useState, useRef } from 'react';
 /* ───────────────────────────────────────── getColorForValue ── */
 export const getColorForValue = (value, type) => {
   if (type === 'temperature') {
@@ -47,39 +48,58 @@ if (type === 'humidity') {
 const cellSize = 12;
 
 const HeatmapGrid = ({ data, type, columns, rows, title, home }) => {
+   const [tip, setTip] = useState({ show: false, x: 0, y: 0, text: '' });
+  const wrapRef = useRef(null);
+  const fmt = v => (type === 'humidity' ? `${v.toFixed(1)} %` : `${v.toFixed(1)} °F`);
   /* ── 1. Coordenadas de la puerta ── */
- console.log('home', home.x, home.y);
+ /* console.log('home', home.x, home.y); */
 
   /* ── 2. Estilo dinámico del icono ── */
   const houseStyle = (() => {
-    if (home.x == null || home.y == null) return { display: 'none' };
+  // si falta algún dato → no mostramos la casita
+  if (home.x == null || home.y == null) return { display: 'none' };
 
-    /* Regla pedida: si y < 0.3 -> top fijo 147 px, left = x * 1000 */
-    if (home.y < 0.3) {
-      return {
-        position: 'absolute',
-        top: 120,
-        left: home.x * 1000,
-        transform: 'translate(-50%,0)',
-        zIndex: 12
-      };
-    }
-    if (home.y > 0.3) {
-      return {
-        position: 'absolute',
-        top: -20,
-        left: home.x * 1000,
-        transform: 'translate(-50%,0)',
-        zIndex: 12
-      };
-    }
-    /* Para otros casos lo ocultamos (ajusta a gusto) */
-    return { display: 'none' };
-  })();
+  /* ============================
+     1) Laterales “pequeños”
+        - home.x es 0 o 1
+        - home.y NO es 0 ni 1
+     ============================ */
+  const isLateral = (home.x === 0 || home.x === 1) &&
+                    home.y !== 0 && home.y !== 1;
+
+  if (isLateral) {
+    return {
+      position: 'absolute',
+      left: home.x === 0 ? -54 : 1054,      // ⬅️ bordes
+      top: 0 + home.y,                      // ⬅️ desplazamiento vertical
+      transform: 'translate(-50%,0)',
+      zIndex: 12
+    };
+  }
+
+  /* ============================
+     2) Esquinas “grandes”
+        - home.y es 0 o 1
+     ============================ */
+  const isCorner = home.y === 0 || home.y === 1;
+  if (isCorner) {
+    return {
+      position: 'absolute',
+      top:  home.y === 0 ? 120 : -20,       // ⬅️ regla pedida
+      left: home.x * 1000,                  // ⬅️ 1000 × x
+      transform: 'translate(-50%,0)',
+      zIndex: 12
+    };
+  }
+
+  /* cualquier otro caso: no mostrar */
+  return { display: 'none' };
+})();
+
 
   /* ── 3. Render ── */
   return (
-  <div className="heatmap-wrapper " >
+  <div className="heatmap-wrapper" ref={wrapRef} >
     
     <FontAwesomeIcon icon={faHouse} className="house-start" style={houseStyle} />
     {title && <h3 className="heatmap-title" >{title}</h3>}
@@ -101,11 +121,30 @@ const HeatmapGrid = ({ data, type, columns, rows, title, home }) => {
       key={idx}
       className="heatmap-cell"
       style={{ backgroundColor: bg }}
+      onMouseMove={e => {
+                if (!wrapRef.current) return;
+                const rect = wrapRef.current.getBoundingClientRect();
+                setTip({
+                  show: true,
+                  x: e.clientX - rect.left + 12,  // un pelín a la derecha
+                  y: e.clientY - rect.top + 12,   // y abajo del puntero
+                  text: avg != null ? fmt(avg) : 'No data',
+                });
+              }}
+              onMouseLeave={() => setTip(t => ({ ...t, show: false }))}
     />
   );
 })}
-
     </div>
+    {tip.show && (
+        <div
+          className="heatmap-tooltip"
+          style={{ left: tip.x, top: tip.y }}
+          role="tooltip"
+        >
+          {tip.text}
+        </div>
+      )}
   </div>
 );};
 

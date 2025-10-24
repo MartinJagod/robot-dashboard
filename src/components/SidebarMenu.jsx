@@ -40,6 +40,19 @@ const SidebarMenu = memo(
       }
     };
 
+  const handleClose = () => {
+    const noFecha  = !selectedDate;
+    const noVuelta = !selectedLap;        // '' ó null
+
+    if (mode === 'history' && (noFecha || noVuelta)) {
+      const todayISO = new Date().toISOString().slice(0, 10);
+      onDateChange(todayISO);   // 1️⃣ fija fecha de hoy
+      onLapChange('');          // 2️⃣ limpia selección de vuelta
+      setMode('realTime');      // 3️⃣ saltas a Real-time
+    }
+
+    onClose();                  // 4️⃣ cierra sidebar
+  };
     return (
       <aside className={`sidebar ${open ? 'open' : ''}`}>
         {/* ---------- HEADER ---------- */}
@@ -56,7 +69,7 @@ const SidebarMenu = memo(
             <p>Mildmay, Canada.</p>
           </div>
 
-          <button className="close-btn" onClick={onClose}>×</button>
+           <button className="close-btn" onClick={handleClose}>×</button>
         </header>
 
         {/* ---------- REAL-TIME MODE ---------- */}

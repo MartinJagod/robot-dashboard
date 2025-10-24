@@ -265,6 +265,7 @@ justify-content: center;
 @media (max-width: 640px) {
   .barn-title { font-size: 1rem; }
   .robot-pill { font-size: 0.85rem; }
+  .compass-ring { width: 30px; height: 30px; color: #111; }
 }
 
 /* CSS para la rosa de los vientos */

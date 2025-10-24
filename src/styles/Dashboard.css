@@ -305,7 +305,7 @@
   background-color: #ffffff;
   /* gris claro */
   font-family: 'Inter', sans-serif;
-  max-width: 95%;
+  max-width:100%;
   margin: 0 auto;
   /* 👈 centra horizontalmente */
   align-content: center;
@@ -324,7 +324,7 @@
 .dashboard-content {
   display: flex;
   /* fila horizontal */
-  gap: 0.2rem;
+  gap: 1.3rem;
   flex-direction: row;
   padding: 2rem 0rem;
   /*  height: calc(100vh - 60px); */
@@ -340,10 +340,11 @@
   /* 80 % del ancho */
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 30px;
   overflow-y: auto;
   scrollbar-width: none;
   align-items: start;
+  height: 70vh;
 }
 
 /*   .info-sidebar {
@@ -368,3 +369,20 @@
     font-family: 'Inter', sans-serif;
     width: 40%;
 } */
+
+.confirm-card {
+  background: #f4f4f4;           /* o #fff según tu tema */
+  color: #000000;                /* ajustá según fondo */
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  width: min(520px, 92vw);
+  box-shadow: 0 10px 30px rgba(0,0,0,.45);
+}
+.btn.btn-primary { 
+  background-color: #e86f1a;
+  font-weight: 600; 
+box-shadow: 2px 2px 1px #0003;}
+.btn.btn-secondary { 
+  background-color: #e5ebef;
+  opacity: .85; 
+box-shadow: 2px 2px 1px #0003;}

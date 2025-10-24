@@ -46,7 +46,8 @@
   }
 /* HeatmapGrid.css */
 
-.heatmap-wrapper { position: relative; }
+.heatmap-wrapper { position: relative;
+}
 
 .house-start {
   position: absolute;
@@ -54,4 +55,18 @@
   color: black;
   z-index: 10;
   pointer-events: none;
+}
+.heatmap-tooltip {
+  position: absolute;
+  transform: translate(8px, 8px);
+  padding: 4px 8px;
+  font-size: 11px;
+  line-height: 1.2;
+  background: #777;
+  color: black;
+  border-radius: 6px;
+  pointer-events: none; /* no interfiere con el mouse */
+  white-space: nowrap;
+  z-index: 999;
+  box-shadow: 0 2px 8px rgba(0,0,0,.3);
 }

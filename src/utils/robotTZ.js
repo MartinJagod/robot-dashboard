@@ -16,3 +16,28 @@ export function tzLabel (name) {
   const off = ROBOT_TZ[name];
   return off === undefined ? '' : `UTC${off >= 0 ? '+' : ''}${off}`;
 }
+
+export function getRobotOffset(robotName) {
+  return ROBOT_TZ[robotName] ?? 0;
+}
+
+
+/* ✅ NUEVO: helpers de formato “congelando” en UTC */
+export function formatRobotClock(name, iso, withSeconds = true) {
+  if (!iso) return '--:--';
+  const d = toRobotLocalDate(name, iso);
+  return d.toLocaleTimeString([], {
+    hour: '2-digit', minute: '2-digit',
+    ...(withSeconds ? { second: '2-digit' } : {}),
+    timeZone: 'UTC'
+  });
+}
+
+export function formatRobotDate(name, iso) {
+  if (!iso) return '--';
+  const d = toRobotLocalDate(name, iso);
+  return d.toLocaleDateString('en-CA', { // YYYY-MM-DD
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    timeZone: 'UTC'
+  });
+}

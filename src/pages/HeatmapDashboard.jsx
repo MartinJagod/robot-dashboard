@@ -16,7 +16,7 @@ import { API_BASE } from '../utils/apiBase';
 import RobotManagerModal from "../components/RobotManagerModal";
 import CompassRose from "../components/CompassRose";
 import { useParams } from "react-router-dom";
-import { toRobotLocalDate,  tzLabel  } from '../utils/robotTZ';
+import { toRobotLocalDate,  tzLabel, formatRobotClock  } from '../utils/robotTZ';
 import useWorkdays from '../hooks/useWorkdays';
 
 /* ───── grilla 80 × 8 ───── */
@@ -70,10 +70,13 @@ const Navbar = memo(
     selectedRobot,
     onRobotChange,
     isRealTime,
-    mode
+    mode,
+    totalLaps = 0,      // ← NUEVO: total de vueltas disponibles
+    currentLap = 0      // ← NUEVO: vuelta actual (0-based)
   }) => {
-    // ➋ Robot seleccionado (se usará luego en useRobot)
-    
+    // Determinar si estamos en la primera o última vuelta
+    const isFirstLap = currentLap === 0;
+    const isLastLap = currentLap >= totalLaps - 1;
     
     return (
       <div className="navbar">
@@ -100,73 +103,73 @@ const Navbar = memo(
                 <span className="tz-label"> · {tzLabel(selectedRobot)}</span>
               </div>
 
-              {/* Pill con el nombre del robot (hardcodeado por ahora) */}
+              {/* Pill con el nombre del robot */}
               <div className="robot-pill">{selectedRobot}</div>
             </div>
           </div>
 
           <CompassRose size={68} heading={180} />
 
-
           {/* ─────── Navegación de laps ─────── */}
           <div className="lap-navigation center-section">
+            {/* Flecha IZQUIERDA - solo visible si NO estamos en la primera vuelta Y NO es realTime */}
             <span
-              aria-hidden={isRealTime}
               style={{
-                /* visibility: isRealTime ? 'hidden' : 'visible', */
-                pointerEvents: isRealTime ? 'none' : 'auto'
+                visibility: (isRealTime || isFirstLap) ? 'hidden' : 'visible',
+                pointerEvents: (isRealTime || isFirstLap) ? 'none' : 'auto',
+                cursor: 'pointer'
               }}
-              >
-              <ChevronLeft onClick={onPrev} style={{ cursor: 'pointer' }} />
+            >
+              <ChevronLeft onClick={onPrev} />
             </span>
 
-            <div >
+            <div>
               <span className="lap-number">Lap {String(lap).padStart(2, '0')}</span><br />
 
-             {mode === 'realTime' ? (
-               /* Real-Time con punto rojo */
-               <span style={{fontSize:"0.9rem", textAlign:"center"}} >
-              Real Time Mode
-              <span className="status-dot" />
-            </span>
-          ) : (
-            /* History sin punto */
-            <span >
-            </span>
-          )}
-              <span aria-hidden={isRealTime}
+              {mode === 'realTime' ? (
+                /* Real-Time con punto rojo */
+                <span style={{fontSize:"0.9rem", textAlign:"center"}}>
+                  Real Time Mode
+                  <span className="status-dot" />
+                </span>
+              ) : (
+                /* History sin punto */
+                <span></span>
+              )}
+              
+              <span 
+                aria-hidden={isRealTime}
                 style={{
                   visibility: isRealTime ? 'hidden' : 'visible',
                   pointerEvents: isRealTime ? 'none' : 'auto'
-                }}>
-
+                }}
+              >
                 <small className="spanFromTo">From: {from}</small><br />
                 <small className="spanFromTo">To:&nbsp;&nbsp;&nbsp;{to}</small>
               </span>
-
             </div>
 
+            {/* Flecha DERECHA - solo visible si NO estamos en la última vuelta Y NO es realTime */}
             <span
-              aria-hidden={isRealTime}
               style={{
-                visibility: isRealTime ? 'hidden' : 'visible',
-                pointerEvents: isRealTime ? 'none' : 'auto'
+                visibility: (isRealTime || isLastLap) ? 'hidden' : 'visible',
+                pointerEvents: (isRealTime || isLastLap) ? 'none' : 'auto',
+                cursor: 'pointer'
               }}
-              >
-              <ChevronRight onClick={onNext} style={{ cursor: 'pointer' }} />
+            >
+              <ChevronRight onClick={onNext} />
             </span>
           </div>
 
-
           <div className="center-item">
-            <span style={{fontSize:"0.9rem", textAlign:"center"}} >Outside temperature</span>
+            <span style={{fontSize:"0.9rem", textAlign:"center"}}>Outside temperature</span>
             <span>{ambientTemp}</span>
           </div>
 
           <div className="center-item">
             <span style={{fontSize:"0.9rem", textAlign:"center"}}>Date</span><br />
-            <span>{historyDate}</span></div>
-          {/* ─────── NUEVO SELECT ─────── */}
+            <span>{historyDate}</span>
+          </div>
 
           <div className="center-item robot-select" style={{ display: 'none' }}>
             <span>Select Robot:</span>
@@ -177,33 +180,31 @@ const Navbar = memo(
                   value={selectedRobot}
                   onChange={e => onRobotChange(e.target.value)}
                   className="robot-dropdown"
-                  >
+                >
                   <option value="">
                     {ROBOTS.length === 0 ? 'No robot available' : 'Select robot…'}
                   </option>
                   {ROBOTS.map(name => (
                     <option key={name} value={name}>
-                      {name}            {/* ← aquí estaba faltando */}
+                      {name}
                     </option>
                   ))}
                 </select>
               </div>
             </label>
           </div>
-
         </div>
-
-
 
         <div className="farm-info-box3" style={{ display: 'none' }}>
           <div><strong>Placing date:&nbsp;</strong><span>{placingDate}</span></div>
           <div><strong>Breeding days:&nbsp;</strong><span>{breedingDays}</span></div>
         </div>
+        
         <img
           src="/Logos/aviRobotsLogo.png"
           alt="Avi Robots"
           className="h-12 object-contain logo-img"
-          />
+        />
       </div>
     );
   }
@@ -214,6 +215,8 @@ const Navbar = memo(
 const Section = memo(
   ({ data, type, title, robotPosition, robotOrientation, homeCoords }) => {
     console.log("Section", JSON.stringify(homeCoords))
+
+ 
     /* ------- coordenadas seguras -------- */
     const { leftPx, topPx, orientationDeg } = useMemo(() => {
       if (
@@ -226,7 +229,7 @@ const Section = memo(
       return {
         leftPx: BASE_LEFT + robotPosition.x * CELL,
         topPx: BASE_TOP + (ROWS - 1 - robotPosition.y) * CELL,
-        orientationDeg: robotOrientation + BASE_ORIENTATION
+        orientationDeg: robotOrientation
       };
     }, [robotPosition, robotOrientation]);
     
@@ -300,7 +303,18 @@ export default function HeatmapDashboard() {
     new Date().toISOString().slice(0, 10)
   );
   const { workdays } = useWorkdays(selectedRobot);
+const [interpPromptOpen, setInterpPromptOpen] = useState(false);
 
+
+// helper para el Sidebar
+const cancelHistoryLoading = () => {
+  // ① corta cualquier overlay
+  setLoadingHistory(false);
+  setLoadingInterpolation(false);
+  // ② opcional: detiene animación / fetch pendientes
+  setLapRequested(null);
+  // (no tocamos 'mode': seguimos en history)
+};
 /*   const ROBOT_TZ = {
     // Beetles
     Beetle001: -4,      // Canadá (UTC-4)
@@ -388,13 +402,13 @@ const fmtHHMM = (d) =>
    toRobotLocalDate(selectedRobot, ts)
      .toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-  const setFromToByLap = lapNum => {
-    const info = laps.find(l => l.value === lapNum);
-    if (!info) return false;          // lap no disponible aún
-    setFromTime(fmtClock(info.start_time));
-    setToTime(fmtClock(info.end_time));
-    return true;
-  };
+ const setFromToByLap = (lapNum) => {
+  const info = laps.find(l => l.value === lapNum);
+  if (!info) return false;
+  setFromTime(formatRobotClock(selectedRobot, info.start_time, true));
+  setToTime(formatRobotClock(selectedRobot, info.end_time,   true));
+  return true;
+};
 
   /* -------------- helper reutilizable -------------- */
   const captureCanvas = async () => {
@@ -479,14 +493,12 @@ useEffect(() => {
         toRobotLocalDate(selectedRobot, ts)
           .toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-      const mapped = (data.laps || []).map(lap => {
-        return {
-          value: lap.lap_number,
-          label: `Vuelta ${lap.lap_number + 1} (${fmtRobot(lap.start_time)} – ${fmtRobot(lap.end_time)})`,
-          start_time: lap.start_time,
-          end_time: lap.end_time
-        };
-      });
+      const mapped = (data.laps || []).map(lap => ({
+  value: lap.lap_number,
+  label: `Vuelta ${lap.lap_number + 1} (${formatRobotClock(selectedRobot, lap.start_time)} – ${formatRobotClock(selectedRobot, lap.end_time)})`,
+  start_time: lap.start_time,
+  end_time: lap.end_time
+}));
 
       setLaps(mapped);
 
@@ -589,6 +601,7 @@ useEffect(() => {
     setHumGrid({});
     setBedGrid({});
     setLapFinished(false);
+    setInterpPromptOpen(false);
   }, [history]);
   /* -- Sync inmediato del encabezado en History -- */
   useEffect(() => {
@@ -678,7 +691,7 @@ useEffect(() => {
 
 
   /* ──── Interpolación final (solo History) ──── */
-  useEffect(() => {
+  /* useEffect(() => {
     if (mode !== 'history' || !lapFinished) return;
     setLoadingInterpolation(true);
     const t = setTimeout(() => {
@@ -690,6 +703,33 @@ useEffect(() => {
     }, 2500);
     return () => clearTimeout(t);
   }, [mode, lapFinished]);
+ */
+/* ──── Interpolación final (solo History) ──── */
+/* Ahora: al terminar la vuelta, sólo abrimos el popup */
+useEffect(() => {
+  if (mode !== 'history' || !lapFinished) return;
+  setInterpPromptOpen(true);   // ← mostrar confirmación
+}, [mode, lapFinished]);
+
+/* Handlers para el popup */
+const ejecutarInterpolacion = () => {
+  setInterpPromptOpen(false);
+  setLoadingInterpolation(true);
+  // sin demora: si querés animación, podés poner un pequeño timeout
+  setTimeout(() => {
+    setTempGrid(prev => interpolateGrid(prev, ROWS, COLUMNS));
+    setHumGrid(prev => interpolateGrid(prev, ROWS, COLUMNS));
+    setBedGrid(prev => interpolateGrid(prev, ROWS, COLUMNS));
+    setLoadingInterpolation(false);
+    setLapFinished(false);   // resetea el “fin de vuelta”
+  }, 0);
+};
+
+const cancelarInterpolacion = () => {
+  setInterpPromptOpen(false);
+  setLapFinished(false);      // no interpolar, dejar como está
+  // No tocamos los grids → quedan en pantalla tal cual
+};
 
   /* ──── From / To para History ──── */
   /*  useEffect(() => {
@@ -773,6 +813,8 @@ useEffect(() => {
           onRobotChange={setSelectedRobot}
           isRealTime={mode === 'realTime'}
            mode={mode}
+           totalLaps={laps.length}              // ← NUEVO
+  currentLap={lapRequested ?? 0} 
         />
 
         {/* Botón & Sidebar */}
@@ -858,6 +900,34 @@ useEffect(() => {
         )}
 
       </div>
+      {interpPromptOpen && (
+  <div className="spinner-overlay">  {/* reutilizo el overlay existente */}
+    <div className="confirm-card">
+  <h3 style={{ marginTop: 0 }}>Interpolate map?</h3>
+  <p>
+    The lap has finished. Would you like to interpolate to fill empty cells
+    and smooth the heatmap?
+  </p>
+  <div
+    style={{
+      display: 'flex',
+      gap: '0.5rem',
+      justifyContent: 'flex-end',
+      marginTop: '1rem',
+    }}
+  >
+    <button className="btn btn-secondary" onClick={cancelarInterpolacion}>
+      No, keep as is
+    </button>
+    <button className="btn btn-primary" onClick={ejecutarInterpolacion}>
+      Yes, interpolate
+    </button>
+  </div>
+</div>
+
+  </div>
+)}
+
     </main>
   );
 }
