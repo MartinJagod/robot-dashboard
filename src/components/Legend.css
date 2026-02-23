@@ -1,0 +1,36 @@
+.legend-wrapper {
+    display: flex;
+    flex-direction: column;
+    margin-left: 0rem; /* ml-4 */
+    user-select: none;
+    width: 150px;
+    gap: 0.11rem;
+
+  }
+  
+  .legend-title {
+    font-size: 0.8rem; /* text-base */
+    font-weight: 600; /* font-semibold */
+    margin-bottom: 0.55rem;
+    word-wrap: break-word; /* Que las palabras largas bajen de renglón */
+    overflow-wrap: break-word; /* Más soporte para navegadores */
+    text-align: center;
+  }
+  
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .legend-color-box {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border-radius: 2px;
+  }
+  
+  .legend-label {
+    font-size: 0.7rem; /* text-sm */
+  }
+  

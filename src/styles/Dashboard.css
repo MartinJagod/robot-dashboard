@@ -1,0 +1,388 @@
+/* src/styles/Dashboard.css */
+/* src/styles/Dashboard.css (o tu hoja global) */
+.info-icon {
+  margin: 0 auto 4px;
+}
+
+.robot-icon {
+  pointer-events: none;
+  transition: left 7.5s linear, top 7.5s linear, transform 7.5s linear;
+}
+
+.spinner-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+}
+
+.spinner {
+  border: 4px solid rgba(235, 175, 35, 0.858);
+  border-top-color: #fff;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
+
+.spinner-text {
+  color: #ee9014;
+  font-size: 1.2rem;
+  font-weight: 1200;
+  margin-top: 10px;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.house-start {
+  position: absolute;
+  /*  ←  no uses relative aquí */
+  display: flex;
+  font-size: 18px;
+  color: black;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.hamburger {
+  position: fixed;
+  top: 9rem;
+  left: 0;
+  background: transparent;
+  color: black;
+  border: none;
+  font-size: 1.5rem;
+  z-index: 1;
+  cursor: pointer;
+}
+
+/* donde tengas tus estilos */
+.hamburger-icon {
+  font-size: 1.1rem;
+  /* opcional: tamaño del icono */
+}
+
+.hamburger-label {
+  margin-left: 40px;
+  /* ← controla aquí el espacio deseado */
+  font-size: 1.1rem;
+}
+
+/* Punto rojo a la derecha de “Real Time” */
+.status-dot {
+  display: inline-block;
+  width: 4px;
+  height: 4px;
+  margin-left: 6px;
+  margin-bottom: 3px;
+  /* espacio entre texto y punto */
+  background: #ff3b30;
+  /* rojo iOS / puedes usar #ff0000 */
+  border-radius: 50%;
+}
+
+/* — Opcional — efecto pulso para destacar */
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  50% {
+    transform: scale(1.6);
+    opacity: 0.6;
+  }
+
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.status-dot {
+  animation: pulse 1.6s infinite ease-in-out;
+}
+
+.sidebar {
+  position: fixed;
+  left: -320px;
+  top: 16%;
+  width: 240px;
+  height: 82%;
+  background: #f4f4f4;
+  opacity: 0.9;
+  border-radius: 0% 25px 0% 0%;
+
+  color: #000000;
+  padding: 1rem 1.2rem;
+  transition: left .3s ease;
+  z-index: 999;
+  overflow-y: auto;
+}
+
+.sidebar.open {
+  left: 0;
+}
+
+.close {
+  position: relative;
+  top: 0;
+  right: -11rem;
+  color: #000000;
+  background: transparent;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-bottom: 1.25rem;
+}
+
+.sidebar-header .avatar img {
+  width: 32px;
+  /* ajusta al tamaño del mock */
+  height: 32px;
+}
+
+.header-text h3 {
+  font-size: 1.25rem;
+  margin: 0;
+  font-weight: 700;
+}
+
+.header-text .hi {
+  font-weight: 600;
+}
+
+.header-text .client-name {
+  font-style: italic;
+  /* como en el diseño */
+}
+
+.header-text p {
+  font-size: .75rem;
+  margin: 0;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 1.4rem;
+  color: #000000;
+  cursor: pointer;
+  line-height: 1;
+}
+
+/* CARD */
+.history-card {
+  background: #fff;
+  /* el beige translúcido */
+  border-radius: 12px;
+  padding: 0.9rem 1rem 1rem;
+  font-size: 0.85rem;
+  color: #000000;
+  margin-bottom: 1.2rem;
+}
+
+/* HEADER */
+.history-card__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+  border-bottom: 1px solid #e86f1a;
+  padding-bottom: 0.25rem;
+  margin-bottom: 0.8rem;
+}
+
+/* CAMPOS */
+.history-card__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  margin-bottom: 0.9rem;
+}
+
+.history-card__field span {
+  font-weight: 500;
+  color: #e86f1a;
+  font-size: 0.78rem;
+}
+
+/* INPUT DATE */
+.history-card input[type="date"] {
+  background: #f6cbad;
+  border: 1px solid #e86f1a;
+  border-radius: 6px;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.82rem;
+  color: #444;
+  outline: none;
+}
+
+/* SELECT CON ÍCONO */
+.select-wrapper {
+  position: relative;
+}
+
+.select-wrapper select {
+  width: 100%;
+  appearance: none;
+  /* quita el arrow nativo */
+  background: #fff;
+  border: 1px solid #e86f1a;
+  border-radius: 6px;
+  padding: 0.4rem 2rem 0.4rem 0.6rem;
+  /* deja espacio al icono */
+  font-size: 0.82rem;
+  color: #000000;
+  outline: none;
+}
+
+.select-wrapper .chevron {
+  position: absolute;
+  right: 0.75rem;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: #d55e03;
+  /* mismo naranja que los bordes */
+  font-size: 0.9rem;
+}
+
+/* CONTENEDOR: solo aporta la línea de separación */
+.realtime-card {
+  margin-top: 1.5rem;
+  padding-top: 0.9rem;
+  /* distancia al texto */
+  border-top: 1px solid rgba(0, 0, 0, 0.25);
+  /* fina línea marrón */
+}
+
+/* BOTÓN “FANTASMA” */
+.realtime-btn {
+  background: none;
+  border: none;
+  color: #000000;
+  /* blanco, como en el mock */
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0;
+  /* sin padding extra */
+  text-align: left;
+  /* alinea como el título */
+}
+
+/* Opcional: feedback en hover/focus */
+.realtime-btn:hover,
+.realtime-btn:focus {
+  text-decoration: underline;
+  outline: none;
+}
+
+.dashboard-wrapper {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100vh;
+  /* ocupa toda la pantalla */
+  background-color: #ffffff;
+  /* gris claro */
+  font-family: 'Inter', sans-serif;
+  max-width:100%;
+  margin: 0 auto;
+  /* 👈 centra horizontalmente */
+  align-content: center;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 2rem;
+  /* 4 * 0.25rem = 1rem, 8 * 0.25rem = 2rem */
+  background-color: #ffffff;
+  /* blanco */
+}
+
+.dashboard-content {
+  display: flex;
+  /* fila horizontal */
+  gap: 1.3rem;
+  flex-direction: row;
+  padding: 2rem 0rem;
+  /*  height: calc(100vh - 60px); */
+  /* ⬅︎ solo controla alto; NO divide el ancho */
+  background-color: #ffffff;
+  margin-left: -38px;
+  max-width: 1740px;
+  margin: 0 auto;
+}
+
+.sections-wrapper {
+  flex: 60%;
+  /* 80 % del ancho */
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  align-items: start;
+  height: 70vh;
+}
+
+/*   .info-sidebar {
+    margin-left: -3px;
+    flex: 0 0 25%;         
+    display: flex;
+    flex-direction: column;
+    gap: 11px;
+  } */
+
+
+/*   .info-card {
+    display: flex
+;
+    flex-direction: column;
+    justify-content: center;
+    gap: 5px;
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, .12);
+    text-align: center;
+    font-family: 'Inter', sans-serif;
+    width: 40%;
+} */
+
+.confirm-card {
+  background: #f4f4f4;           /* o #fff según tu tema */
+  color: #000000;                /* ajustá según fondo */
+  padding: 1rem 1.25rem;
+  border-radius: 12px;
+  width: min(520px, 92vw);
+  box-shadow: 0 10px 30px rgba(0,0,0,.45);
+}
+.btn.btn-primary { 
+  background-color: #e86f1a;
+  font-weight: 600; 
+box-shadow: 2px 2px 1px #0003;}
+.btn.btn-secondary { 
+  background-color: #e5ebef;
+  opacity: .85; 
+box-shadow: 2px 2px 1px #0003;}

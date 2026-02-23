@@ -1,0 +1,372 @@
+/* src/index.css o src/Navbar.css */
+
+.navbar {
+    width: 100%;
+    background-color: white;
+     /* 8 * 0.25rem = 2rem */
+    padding-right: 2rem;
+    padding-top: 0.75rem; /* 3 * 0.25rem = 0.75rem */
+    padding-bottom: 0.75rem;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  }
+  
+
+.logo {
+    margin-top: 1.5%;
+    margin-left: 0.5%;
+   width: 30%;
+}
+
+.logo-img {
+    width: 100px;
+    height: auto;
+}   
+.center-section {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 3rem; /* gap-12 en Tailwind es 3rem */
+    width: 70%;
+    justify-content: center;
+
+  }
+  
+  .center-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #000000; /* text-gray-700 */
+    width: 33%;
+  }
+  
+  .center-item span:first-child {
+    font-size: 0.75rem; /* text-xs */
+    font-weight: 500;   /* font-medium */
+  }
+  
+  .center-item span:last-child {
+    font-size: 1.5rem; /* text-2xl */
+    font-weight: 700;  /* font-bold */
+  }
+  
+  .lap-navigation {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem; /* gap-2 */
+  }
+  div .lap-number{
+    padding-top: 45px;
+    text-align: center;
+  }
+  .lap-navigation span {
+    font-size: 1.7rem; /* text-lg */
+    font-weight: 700;    /* font-semibold */
+  }
+    .spanFromTo {
+    text-align: center;
+   font-size: 0.75rem;
+    font-weight: 500;
+  }
+  
+  .lap-navigation svg {
+    color: #6b7280; /* text-gray-500 */
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  
+  .lap-navigation svg:hover {
+    color: #374151; /* text-gray-700 */
+  }
+  
+  .farm-info-box {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 0.5rem; /* p-2 */
+    margin-right: 1%;
+    border-radius: 0.7rem; /* rounded-md */
+    font-size: 0.775rem; /* text-sm */
+    background-color: white;
+  }
+  
+  .farm-info-row {
+    display: flex;
+    gap: 0.10rem; /* gap-1 */
+    width: 28%;
+  }
+  
+  .farm-info-label {
+    color: #4b5563; /* text-gray-600 */
+    font-weight: 500; /* font-medium */
+  }
+  
+  .farm-info-value {
+    color: #1f2937; /* text-gray-800 */
+  }
+  .heatmap-section {
+    background-color: white;
+    border-radius: 1rem; /* rounded-lg */
+    display: flex;
+    margin-left: 10px;
+        max-width: 87%;
+  }
+  
+  .heatmap-title {
+    font-size: 0.7rem; /* text-sm */
+    font-weight: 500;    /* font-medium */
+    margin-bottom: 0.5rem; /* mb-2 */
+  }
+  
+  .heatmap-grid-container {
+    flex: 1 1 auto;
+    overflow-x: auto;
+  }
+  
+  .heatmap-legend {
+    flex: none;
+    width: 5rem; /* w-32 */
+    margin-top: 3%;
+  }
+ /*  .dashboard-wrapper {
+    min-height: 100vh;
+    background-color: #f3f4f6;
+  }
+   */
+  
+  .heatmap-body {
+    display: flex;
+    gap: 1.5rem;
+    align-items: flex-start;
+  }
+  .heatmap-grid-legend-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    line-height: 0;
+  }
+
+ /* ---------- Robot dropdown ---------- */
+.robot-select { 
+  position: relative; 
+  font-size: 0.65rem; 
+background: #e67e22;
+border-radius: 0.7rem;
+color: #ffffff;
+min-width: 180px;
+display: flex;
+flex-direction: row;
+justify-content: center;
+}
+
+.robot-select__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: #e67e22;          /* naranja botones sidebar */
+  color: #fff;
+  border: 0;
+  border-radius: 0.7rem;
+  padding: 5px;
+   font-weight: 600;
+  cursor: pointer;
+  min-width: 120px;
+}
+
+.robot-select__btn .chevron {
+  position: absolute;
+  right: 14px;
+  width: 8px; height: 8px;
+  border-right: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform: rotate(45deg);
+  transition: transform .2s;
+}
+
+.robot-select__btn .chevron.up { transform: rotate(-135deg); }
+
+/* panel */
+.robot-select__menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  background: #e67e22;
+  border-radius: 0 0 14px 14px;
+  padding: 12px 0;
+  z-index: 1000;
+}
+
+.robot-select__item {
+  font-style: italic;
+  background: #ffefdf;
+  margin: 4px 12px;
+  padding: 6px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background .15s;
+}
+
+.robot-select__item:hover      { background: #ffe4c5; }
+.robot-select__item.active     { background: #ffd8a8; font-weight: 600; }
+
+.select-robot-wrapper select{
+  width:100%;
+  appearance:none;                   /* quita el arrow nativo */
+  background:#f6cbad;
+  border:1px solid #ffffff;
+  border-radius:6px;
+  padding:0.4rem;  /* deja espacio al icono */
+  font-size:0.65rem;
+  color:#444;
+  outline:none;
+  margin-top: 14px;
+  margin-left: 5px;
+  text-align: center;
+}
+/* Flecha atrás */
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: #f2f2f2;
+  color: #111;
+  text-decoration: none;
+}
+.back-btn:hover { filter: brightness(0.95); }
+
+/* Estructura del título */
+.barn-title-wrap { display: flex; flex-direction: column; gap: 0.25rem; }
+.title-row { display: flex; align-items: center; gap: 0.4rem; }
+
+.home-icon { color: #ff6a00; display: inline-flex; }
+
+.barn-title { font-size: 1.7rem; font-weight: 600; color: #111; letter-spacing: 0.2px; }
+.barn-number { font-weight: 600; }
+
+/* Pill del robot */
+.robot-pill {
+  display: inline-block;
+  background: #f3f3f3;
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-weight: 700;
+  color: #ff6a00;
+  line-height: 1;
+  width: fit-content;
+  user-select: none;
+}
+
+@media (max-width: 640px) {
+  .barn-title { font-size: 1rem; }
+  .robot-pill { font-size: 0.85rem; }
+  .compass-ring { width: 30px; height: 30px; color: #111; }
+}
+
+/* CSS para la rosa de los vientos */
+.compass-rose {
+  position: relative;
+  display: inline-block;
+  line-height: 1;
+  user-select: none;
+}
+
+.compass-icon {
+  width: 100%;
+  height: 100%;
+  color: #111;           /* aro */
+}
+
+/* Texto cardinal/intercardinal */
+.c-label {
+  position: absolute;
+  font-size: 0.58em;     /* escala automáticamente con el size del contenedor */
+  font-weight: 700;
+  color: #111;
+  pointer-events: none;
+  text-shadow: 0 1px 0 #fff; /* mejora legibilidad sobre fondos claros */
+}
+
+/* Cardinales */
+.c-n { top: -0.35em; left: 50%; transform: translateX(-50%); }
+.c-s { bottom: -0.35em; left: 50%; transform: translateX(-50%); }
+.c-e { right: -0.35em; top: 50%; transform: translateY(-50%); }
+.c-w { left: -0.35em; top: 50%; transform: translateY(-50%); }
+
+/* Intercardinales (pegados a las esquinas) */
+.c-ne { top: 0.1em; right: 0.1em; font-size: 0.5em; }
+.c.se, .c-se { bottom: 0.1em; right: 0.1em; font-size: 0.5em; }
+.c-sw { bottom: 0.1em; left: 0.1em; font-size: 0.5em; }
+.c-nw { top: 0.1em; left: 0.1em; font-size: 0.5em; }
+
+/* Si querés el triángulo interno naranja estilo “puntero”, podés pseudo-dibujarlo: */
+.compass-rose::after {
+  content: "";
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 0; height: 0;
+  border-left: 0.22em solid transparent;
+  border-right: 0.22em solid transparent;
+  border-bottom: 0.38em solid #ff6a00; /* naranja Avia */
+  transform: translate(-50%, -70%) rotate(0deg); /* ajustá el rotate si querés orientar el puntero */
+}
+.compass-one {
+  position: relative;
+  display: inline-block;
+  line-height: 1;
+  user-select: none;
+}
+.compass-ring { width: 100%; height: 100%; color: #111; }
+
+/* puntero naranja opcional */
+.compass-one .pointer {
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 0; height: 0;
+  border-left: 0.22em solid transparent;
+  border-right: 0.22em solid transparent;
+  border-bottom: 0.38em solid #ff6a00;
+  content: "";
+  display: inline-block;
+}
+
+/* letra cardinal */
+.only-label {
+  position: absolute;
+  font-weight: 800;
+  color: #111;
+  text-shadow: 0 1px 0 #fff;
+  font-size: 0.75em;  /* escala con el tamaño del contenedor */
+  pointer-events: none;
+}
+
+/* ubicaciones */
+.pos-n { top: -0.05em; left: 50%; transform: translateX(-50%); }
+.pos-s { bottom: -0.1em; left: 50%; transform: translateX(-50%); }
+.pos-e { right: -1em; top: 50%; transform: translateY(-50%); }
+.pos-w { left: -1.5em; top: 50%; transform: translateY(-50%); }
+
+/* Fin CSS rosa de los vientos */
+.robot-pill .tz-label {
+  margin-left: .25rem;
+  font-weight: 400;
+  opacity: .7;
+}
+.history-card__field input[type="date"] {
+  cursor: pointer;
+}
+
+.history-card__field input[type="date"]:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Feedback visual cuando hay fechas limitadas */
+.history-card__field input[type="date"]:valid {
+  border-color: #4CAF50;
+}

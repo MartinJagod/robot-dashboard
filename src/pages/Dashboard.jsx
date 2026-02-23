@@ -1,19 +1,14 @@
 import { useRobots } from '../hooks/useRobots';
 import RobotCard from '../components/RobotCard';
+import RobotSelector from '../components/RobotSelector';
 import { useState, useEffect } from 'react';
 
 const Dashboard = () => {
-  const { robots, robotsHistory } = useRobots();
   const [selectedRobotId, setSelectedRobotId] = useState('');
+  const { robots, robotsHistory } = useRobots(selectedRobotId);
   const [playbackIndex, setPlaybackIndex] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [playbackRobot, setPlaybackRobot] = useState(null);
-
-  useEffect(() => {
-    if (robots.length > 0 && !selectedRobotId) {
-      setSelectedRobotId(robots[0].id);
-    }
-  }, [robots, selectedRobotId]);
 
   const handleSelectChange = (e) => {
     setSelectedRobotId(e.target.value);
@@ -22,8 +17,8 @@ const Dashboard = () => {
     setPlaybackRobot(null);
   };
 
-  const selectedRobot = robots.find(robot => robot.id === selectedRobotId);
-
+  const selectedRobot = robots[0];
+  /*
   const handlePlayback = () => {
     const history = robotsHistory[selectedRobotId];
     if (!history || history.length === 0) return;
@@ -36,51 +31,58 @@ const Dashboard = () => {
       if (index < history.length) {
         setPlaybackRobot({
           ...selectedRobot,
-          position_x: history[index].position_x,
-          position_y: history[index].position_y,
+          start_time: history[index].start_time,
+          name: history[index].name,
+          laps: history[index].laps,
+          traveled_distance: history[index].traveled_distance,
+          lane_completion: history[index].lane_completion,
           orientation: history[index].orientation,
-          battery: history[index].battery
-
+          current_lane: history[index].current_lane,
+          last_corner: history[index].last_corner,
+          room_temp: history[index].room_temp_measured,
+          room_hum: history[index].room_hum_measured,
+          bed_temp: history[index].bed_temp_measured,
+          battery: history[index].battery,
+          remaining_time: history[index].remaining_time
         });
+
         index++;
         setPlaybackIndex(index);
       } else {
         clearInterval(interval);
         setIsPlaying(false);
       }
-    }, 500); // velocidad del playback (medio segundo por posición)
+    }, 500); // Velocidad del playback (0.5 seg)
   };
+  */
 
   return (
     <div style={{ padding: '16px', maxWidth: '1200px', margin: '0 auto' }}>
-      
+
       <div style={{ marginBottom: '20px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-        <select 
-          value={selectedRobotId} 
-          onChange={handleSelectChange}
-          style={{ padding: '10px', borderRadius: '8px', border: '1px solid #ccc', width: '100%', maxWidth: '300px' }}
-        >
-          {robots.map(robot => (
-            <option key={robot.id} value={robot.id}>
-              {robot.name} (ID: {robot.id})
-            </option>
-          ))}
-        </select>
+        <RobotSelector
+          selectedId={selectedRobotId}
+          changeEvent={handleSelectChange}
+        />
+        {/*
         <button
           onClick={handlePlayback}
           style={{ padding: '10px 16px', backgroundColor: '#28a745', color: '#fff', borderRadius: '8px', border: 'none', cursor: 'pointer' }}
           disabled={isPlaying}
         >
-          {isPlaying ? `Reproduciendo... (${playbackIndex}/${robotsHistory[selectedRobotId]?.length})` : "▶️ Repetir recorrido"}
+          {isPlaying
+            ? `Reproduciendo... (${playbackIndex}/${robotsHistory[selectedRobotId]?.length || 0})`
+            : "▶️ Repetir recorrido"
+          }
         </button>
+        */}
       </div>
 
-      {selectedRobot ? (
+      {selectedRobot !== null && selectedRobot !== undefined ? (
         <RobotCard robot={isPlaying && playbackRobot ? playbackRobot : selectedRobot} />
       ) : (
-        <p style={{color:'#777'}}>Selecciona un robot para mostrar información.</p>
+        <p style={{ color: '#777' }}>Selecciona un robot para mostrar información.</p>
       )}
-
     </div>
   );
 };

@@ -1,12 +1,22 @@
 import axios from 'axios';
 
-const api = axios.create({
-  baseURL: 'http://localhost:4000',
-});
-
-// Nuevo método que trae todos los robots
-export const getRobotsData = async () => {
-  const response = await api.get(`/robots`);
+export const getRobotStatus = async (robotID) => {
+  const response = await axios.get(`/api/robot/${robotID}`);
   return response.data;
 };
 
+export const getRobotsHistory = async (robotID) => {
+ /*  const response = await axios.get(`/api/robot/${robotID}/history`);
+  return response.data; */
+};
+
+// ESTA ES LA QUE ESTÁS IMPORTANDO EN EL HOOK
+export const getRobotsStatus = async (robotID) => {
+  /* const response = await axios.get(`/api/robot/${robotID}`);
+  return response.data.data[0]; */
+};
+
+export const getRobotConnections = async () => {
+ /*  const response = await axios.get(`/api/connections/`);
+  return response.data; */
+};
